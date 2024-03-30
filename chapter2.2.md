@@ -53,7 +53,7 @@
 
 假设我们有一个记录个人信息的数据集，取名为*Person*。数据集中的每个数据项都记录了一个人的信息。假设我使用如下的键值对结构存储个人信息：
 
->> <PersonID, PersionInfo>
+> <PersonID, PersionInfo>
 
 其中，*PersonID*为键，可以用来唯一地识别一个人（比如，可将其理解为身份证号码）；*PersonInfo*记录了这个人的信息，包括他的名字、年龄等。一个人的*PersonID*和*PersonInfo*共同构成一个数据项，被存放在*Person*数据集中。
 
