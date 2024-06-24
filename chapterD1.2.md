@@ -14,7 +14,7 @@ $$
 文档(Document) \in 文档集(Collection) \in 数据库(Database)
 $$
 
-具备关系型数据库基础知识的读者不难发现，文档数据库中的文档集相当于关系型数据库中的表，文档则相当于表中的元组（表中的行）。
+具备关系型数据库基础知识的读者不难发现，文档数据库中的**文档集**相当于关系型数据库中的**表**，**文档**则相当于表中的**元组**（表中的行）。
 
 在使用文档数据库系统时，我们首先需要指定一个数据库作为访问对象。在MongoDB中，我们使用下面的指令：
 
@@ -45,7 +45,7 @@ db.createCollection("myBook", {max : 5000} )
 文档数据库系统允许用户创建任意形式的文档，并将它放置在任意一个文档集中。在MongoDB中，用户可以使用insertOne指令来创建一个新文档，并将该文档插入某个文档集中，比如：
 
 ```bson
-[例D1.8]
+[例D1.8] 在文档集中创建一个文档
 db.person.insertOne( {
   "name": "Jason Chang",
   "birthdate": "Jan 20, 2001",
@@ -55,12 +55,12 @@ db.person.insertOne( {
 } )
 ```
 
-上面的指令表示创建一个关于Jason Chang的文档，并将它插入到person文档集中。上一节讲到，每一个文档有一个"\_id"属性，作为文档的唯一标识。如果在插入文档时用户没有显示地设置"\_id"属性值，那么MongoDB会自动生成一个全局唯一的值并赋给该文档的"\_id"属性。
+上例表示创建一个关于Jason Chang的文档，并将它插入到person文档集中。上一节讲到，每一个文档有一个"\_id"属性，作为文档的唯一标识。如果在插入文档时用户没有显示地设置"\_id"属性值，那么MongoDB会自动生成一个全局唯一的值并赋给该文档的"\_id"属性。
 
 此外，MongoDB也支持使用insertMany指令向一个文档集中一次性插入多个文档，比如：
 
 ```bson
-[例D1.9]
+[例D1.9] 在文档集中一次性创建多个文档
 db.book.insertMany( [
   {"title":"An Apple Tree", "author":"Steven Tang"},
   {"title":"Home", "author":"Jing Ba","year":"Sep 1,1997"},
@@ -104,21 +104,21 @@ db.person.insertMany([
 MongoDB提供find指令来实现文档查询，比如：
 
 ```bson
-[例D1.10]
+[例D1.10] 文档查询
 db.person.find( {
   "gender": "female",
   "city": "Shanghai"
 } )
 ```
 
-该指令表示在文档集person中查找gender属性为"female"并且city属性为"Shanghai"的文档，实质上就是在文档集person中查询和{"gender":"female", "city": "Shanghai"}相匹配的文档。基于文档匹配运算方式，我们可以这样理解：指令x.find(y)的目的是在x中找到y的所有匹配。上述指令的查询结果为关于Jessie Li的文档。
+上例表示在文档集person中查找gender属性为"female"并且city属性为"Shanghai"的文档，实质上就是在文档集person中查询和{"gender":"female", "city": "Shanghai"}相匹配的文档。基于文档匹配运算方式，我们可以这样理解：指令x.find(y)的目的是在x中找到y的所有匹配。上述指令的查询结果为关于Jessie Li的文档。
 
 文档匹配是一种基本运算。MongoDB在其上增加了很多灵活性，便于用户表达更广泛的需求。除了上面提到的文档属性的单个值匹配之外，MongoDB还支持属性的多个值匹配、范围匹配等。
 
 MongoDB支持通过关键字**in**来实现属性的多个值匹配。以下指令表示在person文档集中查询city属性为“Shanghai”或“Beijing”的文档：
 
 ```bson
-[例D1.11]
+[例D1.11] 多值匹配的文档查询
 db.person.find( 
   { "city": { $in: [ "Shanghai", "Beijing" ] } } 
 )
@@ -127,7 +127,7 @@ db.person.find(
 同样地，多值匹配也可以使用逻辑符号**or**来实现：
 
 ```bson
-[例D1.12]
+[例D1.12] 多值匹配的文档查询
 db.person.find( 
  { $or: [ { "city": "Shanghai" }, { "city": "Beijing" } ] } 
 )
@@ -136,7 +136,7 @@ db.person.find(
 此外，MongoDB支持使用关键字**lt,lte,gt,gte**来实现范围匹配，其中lt表示小于，lte表示小于等于，gt表示大于，gte表示大于等于。以下指令表示查询在属性birthdate的子属性year上取值大于2000并且小于2002的文档：
 
 ```bson
-[例D1.13]
+[例D1.13] 范围匹配的文档查询
 db.person.find( 
   { "birthdate.year": { $gt: 2000, $lt: 2002} } 
 )
@@ -145,7 +145,7 @@ db.person.find(
 通常，在不做特殊要求的前提下，find指令将找到所有满足条件的文档，并返回这些文档的所有属性。比如，下面的例子中返回了查询结果Jessie Li文档的所有属性和属性值（包括"\_id"属性）。
 
 ```bson
-[例D1.14]
+[例D1.14] 查询文档的所有属性
 db.person.find( 
   { "gender": "female", "city": "Shanghai" } 
 )
@@ -167,7 +167,7 @@ db.person.find(
 但是，很多时候，我们并不需要一个文档的所有属性。find指令允许指定需要返回的属性。例如：
 
 ```bson
-[例D1.15]
+[例D1.15] 查询文档的指定属性
 db.person.find( 
   { "gender": "female", "city": "Shanghai" }, 
   { "name": 1, "city": 1 } 
@@ -191,7 +191,7 @@ MongoDB使用update指令实现对文档的更新。其中，updateOne用于更�
 update指令包含三个参数，第一个参数指定查询条件，即表示将对什么文档进行更新；第二个参数指定具体的更新操作，即更新文档的哪些属性；第三个参数为可选参数。
 
 ```bson
-[例D1.16]
+[例D1.16]更新单个文档
 db.person.updateOne(
    { "name": "Jason Chang" },
    {  $set: { "address": "889 Alibaba Street", "city": "Hangzhou" } }
@@ -201,7 +201,7 @@ db.person.updateOne(
 updateOne指令首先找到属性name取值为“Jason Chang”的文档，然后将该文档的city属性改为“Hangzhou”，address属性改为“889 Alibaba Street”。updateOne指令只更新找到的第一个文档，也就是说，如果文档集person中存在两个名叫Jason Chang的人，那么只有第一个被找到的Jason Chang文档会被修改。
 
 ```bson
-[例D1.17]
+[例D1.17]更新多个文档
 db.person.updateMany(
    { "birthdate.year": {$lt: 2000} },
    {  $set: { "group": "adult" } }
@@ -215,14 +215,14 @@ updateMany指令首先找到在属性birthdate的子属性year上取值小于200
 MongoDB使用delete指令实现从一个文档集中删除文档。具体指令分为deleteOne和deleteMany。
 
 ```bson
-[例D1.18]
+[例D1.18] 删除所有文档
 db.person.deleteMany({})
 ```
 
 deleteMany指令允许同时删除满足查询条件的所有文档。上例中，deleteMany指令中没有指定查询条件，即没有指定删除对象的条件，它表示将文档集person中的所有文档全部删除。
 
 ```bson
-[例D1.19]
+[例D1.19] 删除满足指定条件的所有文档
 db.person.deleteMany( { "name": "Jason Chang" } )
 ```
 
@@ -230,7 +230,7 @@ db.person.deleteMany( { "name": "Jason Chang" } )
 
 
 ```bson
-[例D1.20]
+[例D1.20] 删除一个文档
 db.person.deleteOne( { "_id": ObjectId("4b2b9f67a1f631733d917a7a") } )
 ```
 
