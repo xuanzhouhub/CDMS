@@ -47,7 +47,7 @@
 基于这样的结构，我们可以将实体整体存入系统，也可以将它们整体取出来。不仅如此，系统还可以根据单个属性的取值对数据进行访问。比如，要查找居住在地址为20 Yamaha Street的人，我们可以要求系统找到在address属性上的取值为“20 Yamaha Street”的实体。例如，数据管理系统可以提供以下的数据存取接口：
 
 > put( [*attribute*, *value*] );      // 将一个通过一组*attribute*:*value*刻画的实体存入表格
-> get(*attribute*, *key*);              // 从表格中取出在属性*attribute* 取值为*value*的实体
+> get(*attribute*, *value*);              // 从表格中取出在属性*attribute* 取值为*value*的实体
 
 利用这样的功能接口，我们可以用以下指令轻易获取居住在地址为20 Yamaha Street的人的信息。
 
