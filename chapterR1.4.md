@@ -6,7 +6,7 @@
 
 学生-课程数据库中包括以下三个表：
 
-* 学生表：Student (<u>Sno</u>, Sname, Age, Gender, Dept)；
+* 学生表：Student (<u>Sno</u>, Sname, Gender, Age, Dept)；
 * 课程表：Course (<u>Cno</u>, Cname, Credit)；
 * 学生选课表：SC (<u>Sno,Cno</u>,Grade)；
 
@@ -44,8 +44,8 @@ CREATE TABLE <表名> ( <列名><数据类型> [列级完整性约束条件]
 > &nbsp;&nbsp;&nbsp;&nbsp;CREATE TABLE Student <br>
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Sno CHAR(9) PRIMARY KEY, &nbsp; &nbsp;/\*列级完整性约束条件，Sno是主码\*/ <br>
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sname CHAR(20) NOT NULL,  &nbsp; &nbsp;/\*列级完整性约束条件，Sname不能取空值\*/ <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Age INT,   <br>
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gender CHAR(2),   <br>
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Age INT,   <br>
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dept CHAR(10)   <br>
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);
 
