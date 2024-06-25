@@ -20,13 +20,12 @@ SELECT语句既能够实现简单的单表查询，也能实现复杂的连接�
 单表查询是指仅涉及一个表的查询。选择表中满足查询条件的元组的全部或部分列即关系代数的选择和投影运算。下面给出了单表查询的例子。
 
 <center>
-	<img src="fig/chR1.3-SelectOne.jpg" width="60%" alt="select" />
+	<img src="fig/chR1.5-SelectOne.jpg" width="60%" alt="select" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 R1.10 单表查询示例
 	</div>
 </center>
-
 
 > [例R1.23] 查询学号为'2022001'的学生姓名。<br>
 > &nbsp;&nbsp;&nbsp;&nbsp;SELECT Sname <br>
@@ -91,8 +90,6 @@ WHERE子句中可以同时包含多个连接条件和多个选择条件，多个
 	</div>
 </center>
 
-
-
 ##  聚集查询
 SQL除了提供查询功能之外，还提供了计算功能。在关系数据库中，数据被组织成表的形式。基于表的形式可以做数据统计和分析。SQL提供了许多函数来实现统计，这些函数被称为聚集函数，查询称为聚集查询。
 
@@ -124,8 +121,6 @@ MIN( [DISTINCT | ALL] <列名> )    /*计算一列值中的最小值*/
 		图 R1.12 聚集查询示例
 	</div>
 </center>
-
-
 ##  分组聚集
 GROUP BY引导的分组聚集是一种复杂的聚集查询，它首先将查询结果按某一列或多列的值进行分组，值相等的为一组，然后对每一分组使用聚集函数进行计算。
 
@@ -182,8 +177,6 @@ GROUP BY引导的分组聚集是一种复杂的聚集查询，它首先将查询
 		图 R1.14 嵌套查询示例
 	</div>
 </center>
-
-
 例R1.33的查询也可以用连接查询来实现。
 > 例R1.33查询请求的另一种SQL表示。<br>
 > &nbsp;&nbsp;&nbsp;&nbsp;SELECT Sname<br>
@@ -225,7 +218,6 @@ GROUP BY引导的分组聚集是一种复杂的聚集查询，它首先将查询
 		图 R1.15 相关子查询示例
 	</div>
 </center>
-
 
 
 
