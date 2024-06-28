@@ -1,0 +1,66 @@
+# 从概念设计到结构设计的一个例子
+
+本节通过前面章节的博客网站来展示从数据库概念设计到文档数据库结构设计的过程
+
+## 结构设计
+
+<center>
+	<img src="fig/ch5.2-E-Rmodel.jpg" width="85%" alt="E-R" />
+	<br>
+	<div display: inline-block; padding : 2px>
+		图 R5.3 博客网站的ERD
+	</div>
+</center>
+
+图R5.2展示了博客网站的ERD概念模型。有了概念模型，我们可以根据文档数据库的结构设计规则得到一下的文档模式设计。
+
+```bson
+设计一：文档模式中不存在嵌套文档，ERD转换为用户、文章、评论三个文档集
+User { u_id, name, gender, reg_date, fans[u_id], followee[u_id] }
+Doc  { d_id, title, d_content, pub_date, u_id}
+Comment { c_id, c_content, com_date, u_id, d_id }
+
+设计二：文档模式中存在嵌套文档，ERD转换为用户、文章两个文档集，评论实体嵌入文章文档集中
+User { u_id, name, gender, reg_date, fans[u_id], followee[u_id] } 
+Doc  { d_id, title, d_content, pub_date, u_id, name, 
+	   comment [ { c_id, c_content, com_date, u_id, name } ] }
+
+设计三：文档模式中存在嵌套文档，ERD转换为用户一个文档集，文章、评论实体嵌入博主文档集中
+User { u_id, name, gender, reg_date, fans[u_id], followee[u_id], 
+	   doc[ {
+       	      d_id, title, d_content, pub_date, 
+       	      comment [ { c_id, c_content, com_date, u_id, name } ]
+          } ] }
+```
+
+设计一中，用户、文章、评论三个实体型分别转换为User、Doc和Comment三个文档集。User文档集包含用户ID（u\_id）、用户名称（name）、性别（gender）、注册时间（reg\_date）、粉丝（fans[u\_id]）和关注者（followee[u\_id]）五个属性，其中fans[u\_id]和followee[u\_id]以数组的形式表达了用户之间n:m的关注和被关注联系。Doc文档集包含文章ID（d\_id）、文章标题（title）、文章内容（d\_content）、发表时间（pub\_date）和文章作者ID（u\_id）五个属性，其中u\_id属性表达了用户与文章之间的1:n联系。Comment文档集包含评论ID（c\_id）、评论内容（c\_content）、评论时间（com\_date）、点评人ID（u\_id）和被评论文章的ID（d\_id）五个属性，其中u\_id和d\_id分别表达了用户与评论、文章与评论之间的1:n联系。
+
+设计二在设计一的基础之上，将评论文档集comment以文档数组的形式嵌入文章文档集Doc中。Doc文档集中包含文章ID（d\_id）、文章标题（title）、文章内容（d\_content）、发表时间（pub\_date）、文章作者ID（u\_id）、文章作者名（name）以及评论文档数组comment[{}]，其中嵌套的评论文档数组comment[{}]表达了文章与评论之间的1:n联系。评论文档数组comment中包含评论ID（c\_id）、评论内容（c\_content）、评论时间（com\_date）、点评人ID（u\_id）和点评人名称（name）五个属性。文章文档集Doc中冗余记录了文章作者名，评论文档集中冗余记录了点评人名。
+
+设计三在设计二的基础之上，将文章文档集Doc以文档数组的形式嵌入用户文档集User中。
+
+哪一种文档模式设计更适用于博客网站呢？我们先来回顾一下博客网站的界面和功能。图R5.4中展示了博客网站的首页、博客展示界面、个人主页以及博客编辑页面。
+
+<center>
+	<img src="fig/ch5.2-interface.jpg" width="85%" alt="interface" />
+	<br>
+	<div display: inline-block; padding : 2px>
+		图 R5.4 博客网站前端功能界面
+	</div>
+</center>
+
+下面我们分别对比三种设计在实现各个界面功能的优缺点：
+
+* 博客首页展示了用户关注的博主最新发表的博客文章简介，提供了通向其他界面的链接。实现博客首页，首先需要读取当前博主的followee[u_id]，获得当前博主关注的所有用户ID，然后再根据用户ID读取用户发表的文章，并按发表时间排序展示。设计一和设计二需要先读取用户文档集User然后再读取文章文档集Doc获取文章，设计三需要两次读取用户文档集User。
+* 博客展示界面展示了某篇博客文章的详细内容，包括标题，作者名字，发表日期，文章内容和评论，提供了新增文章评论的功能。实现博客展示界面，设计一需要通过文章ID（d\_id）和用户ID（u\_id）访问User、Doc和Comment三个文档集才能查询到所有信息，其中读取User文档集是为了获取作者名字，新增一条评论时需向Comment文档集中增加一个文档信息；设计二只需要通过文章ID（d\_id）访问Doc文档集就能获得所有的信息，新增一条评论时需向Doc文档集中的comment数组中增加一条评论信息；设计三需要扫描整个User文档集，根据文章ID（d\_id）找到所有的信息，新增一条评论时也需要扫描整个User文档集。相比之下，基于设计二实现的博客展示界面性能更好。
+* 个人主页展示用户的个人信息，包括已发表的博客数量、粉丝数量、关注者数量以及发表博客文章的简介。实现个人主页，设计一和设计二需要同时访问User和Doc两个文档集，设计三只需要访问User一个文档集就能获得所有的信息。相比之下，设计三更适用于实现个人主页展示界面。
+* 博客编辑界面提供博客文章的编辑功能。实现博客编辑界面，设计一和设计二只需要向Doc文档集中增加一个文档，而设计三需要先访问User文档集，通过用户ID（u\_id）找到当前博主的信息，然后向该博主的文章文档数组doc[{}]中增加新的文章信息。相比之下，设计一和设计二更适用于博客编辑界面。
+
+综合上述分析，我们发现基于设计二设计的文档模式更适用于博客网站。博客网站应用中经常通过用户ID（u\_id）来查找该用户发表的文章并按时间顺序排序，因此可以在Doc文档集的u\_id和pub\_date两个属性上构建组合索引，提供查询效率。
+
+
+
+
+
+
+
