@@ -23,11 +23,12 @@
 
 ## 示例
 我们以一个简单的例子来介绍关系数据库管理系统的查询处理。
-
-> [例R3.1] 查询课程成绩不及格的学生名称。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;SELECT Sname <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;FROM Student, SC<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;WHERE Student.Sno = SC.Sno AND SC.Grade < 60; <br>
+```SQL
+[例R3.1] 查询课程成绩不及格的学生名称。
+SELECT Sname
+FROM Student, SC
+WHERE Student.Sno = SC.Sno AND SC.Grade < 60; 
+```
 
 * 第一步，SQL解析。利用词法语法解析器判断上述查询SQL是否合规，然后进行语义检查，最后将上述SQL转换为关系代数表达式，并用查询树进行表示，如图R3.2(a)。
 * 第二步，查询优化。首先进行代数优化，将第一步中的关系代数表达式等价转换成查询性能更高的关系代数表达式并用查询树进行表示；然后进行物理优化，为查询树中的各个关系代数算子选择最为高效的实现算法，形成最终的物理执行计划。在图R3.2(b)的物理执行计划中，连接运算使用哈希连接算法（Hash Join），选择运算使用基于索引的扫描算法（Index Scan）。
@@ -40,7 +41,6 @@
 		图 R3.2 查询处理示例
 	</div>
 </center>
-
 
 
 

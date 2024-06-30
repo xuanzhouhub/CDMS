@@ -18,12 +18,13 @@
 ​	假设我们有一个简单的社交网络图数据库，其中包含了用户和用户之间的关系。用户顶点有一个属性 `name`，边的关系类型为`FRIEND`，采用无向连接，表明用户之间朋友的对等关系。我们简单构建用户以及用户关系如图 4-1 所示，该图直观地向我们展示了各用户的邻居关系，`Alice`和`Bob`、`Charlie`存在朋友关系，`Charlie`和`Alice`、`David`存在朋友关系，`David`和`Bob`、`Charlie`存在朋友关系，`Bob`和`Alice`、`David`存在朋友关系。
 
 <center>
-	<img src="IMG/图查询引擎1.png" width="35%" alt="storage hierarchy" />
+	<img src="fig/图查询引擎1.png" width="35%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-1 社交网络图示例
 	</div>
 </center>
+
 
 **数据创建**	
 
@@ -69,12 +70,13 @@ Alice | Charlie| David
 ​	**多阶邻居查询（Multi-hop Neighbor Query）**用于查找从一个顶点出发，通过多个**跳（Hop）**所能够到达的邻居顶点。通过一条边直接与某个顶点相连的顶点为该顶点的**单跳邻居**，也称为**邻居**、**一阶邻居**。例如，在社交网络中，一个人的直接朋友就是这个人的单跳邻居。从某个顶点出发，通过两个或多个顶点（通过两条或多条边）才能到达的顶点为该顶点的**多跳邻居**，单点多阶邻居查询就是查找单个顶点的多跳邻居的过程。同样以社交网络为例，某个人的二跳邻居就是这个人朋友的朋友，三跳邻居是这个人朋友的朋友的朋友，以此类推。如图 4-2 所示，以中心的黑色顶点 v 为例，图中的所有绿色顶点为 v 的单跳邻居；在绿色顶点的单跳邻居中，除了 v 自身和所有绿色顶点，剩下的顶点即 v 的二阶邻居，如图中的蓝色顶点；以此类推得到图中的紫色顶点为 v 的三阶邻居。
 
 <center>
-	<img src="IMG/多阶邻居.png" width="35%" alt="storage hierarchy" />
+	<img src="fig/多阶邻居.png" width="35%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-2 多阶邻居示例
 	</div>
 </center>
+
 
 ​	多阶邻居查询的应用很广泛，较为常见的有：多阶扩散、近邻分布、关联可视化展示和特定邻居搜索等等。下面我们将给出明确的定义和例子来帮助读者更好地理解多阶邻居查询的应用。
 
@@ -101,12 +103,13 @@ Alice | Charlie| David
 ​	顾名思义，路径是从起点到终点的方向和路线，**两点间关联路径查询（Path Query Between Two Nodes）**用于查找从一个顶点到另一个顶点的所有可能路径或特定路径。其中**两点间关联路径**是指能够将两点联通起来的所有边的集合。如图 4-3 所示，张四建立了志愿者社团，李一是该志愿者社团的社员，张五是张四的亲属，此时从张五到张四，张四到志愿者社团，志愿者社团到李一的三条边的集合就构成了张五到李一的一条路径。
 
 <center>
-	<img src="IMG/关联路径.png" width="35%" alt="storage hierarchy" />
+	<img src="fig/关联路径.png" width="35%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-3 关联路径示例
 	</div>
 </center>
+
 
 ​	在实际应用中，以刑侦场景为例，案件的受害者与施害者的关联是警察首要关注的信息。假设能够构建足够大的一张图，其中包括多种关联关系信息，则可以通过关联路径查询来获取受害者与施害者之间的所有关联路径，二者间的各种直接与间接的关联关系就能够清晰显现出来，非常有利于提高分析案件的效率。
 
@@ -117,22 +120,24 @@ Alice | Charlie| David
 ​	在介绍关联子图查询之前，我们需要对**子图（Subgraph）**有一个清晰的理解，子图的概念是相对一个更大的图来定义的。如果一个图的点集和边集都是另一个图的子集，则称该图为另外一个图的子图。以华东师范大学月度转账网络为例，该月数据科学与工程学院教职工之间的转账关系则构成该转账网络的一个子图。**多点间关联子图查询（Subgraph Query Between Multiple Nodes）**用于查找包含多个指定顶点的子图，该子图通常不包含其他无关的顶点和边。如图 4-4 所示，以4.2.1中的多阶邻居查询为例，如图 4-4(a) 所示，我们需要得到该网络中包含所有蓝色顶点的关联子图，则所有蓝色顶点集和橙色边集组成的图 4-4(b) 和图 4-4(c) 都是目标子图之一。
 
 <center>
-	<img src="IMG/关联子图.png" width="75%" alt="storage hierarchy" />
+	<img src="fig/关联子图.png" width="75%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-4 关联子图示例
 	</div>
 </center>
 
+
 ​	关联子图查询在应用上有两个很明显的优点，最直接的优点在于其对数据需求的表达能力很强。以查询需求“在华东师范大学数据科学与工程学院就读并且家乡在上海的硕士有哪些？”为例，一般的查询理解方式通常仅仅从查询中抽取关键字来进行，而子图的方式则更为精准，如图 4-5 所示。子图能够理解查询目标是个顶点，顶点有至少三条关联的边，分别是对“华东师范大学数据科学与工程学院”的就读关系，对“上海“的家乡定位关系以及对“硕士学位”的学历关系，以此更精准地响应查询需求。
 
 <center>
-	<img src="IMG/关联子图4.png" width="50%" alt="storage hierarchy" />
+	<img src="fig/关联子图4.png" width="50%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-5 在华东师范大学数据科学与工程学院就读并且家乡在上海的硕士有哪些？
 	</div>
 </center>
+
 
 ​	关联子图查询的第二个很重要的优点，就在于其能够描述多点多阶的关联关系，我们利用点导出子图的概念进行解释。给定图 $G$ 及其点集 $V$ 的某个子集 $V’$ ，则 $G$ 在 $V’$ 上的**点导出子图（Node-Induced Subgraph）**为两个端点都在 $V’$ 中的最大边集组成的图。通俗地来说，点导出子图就是给定点集子集的情况下边集最大的子图。延用图 4-4 的例子，图 $G$ 即图 4-4(a) 中所有顶点和边的集合，点集 $V$ 为图 4-4(a) 中所有顶点组成的点集，点集子集 $V’$ 为图 4-4(a) 中所有蓝色顶点组成的点集，图 4-4(b) 中所有蓝色顶点和橙色边组成的集合即 $G$ 在 $V’$ 上的点导出子图。
 
@@ -161,12 +166,13 @@ Alice | Charlie| David
 ​	下面我们用一个例子来说明无向图中深度优先搜索的计算步骤，如图 4-6 所示。
 
 <center>
-	<img src="IMG/DFS.png" width="60%" alt="storage hierarchy" />
+	<img src="fig/DFS.png" width="60%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-6 深度优先搜索 DFS 示例
 	</div>
 </center>
+
 
 以下为计算步骤：
 
@@ -188,12 +194,13 @@ Alice | Charlie| David
 ​	我们同样用深度优先搜索的例子来说明无向图中广度优先搜索的计算步骤，如图 4-7 所示。
 
 <center>
-	<img src="IMG/BFS.png" width="70%" alt="storage hierarchy" />
+	<img src="fig/BFS.png" width="70%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-7 广度优先搜索 BFS 示例
 	</div>
 </center>
+
 
 以下为计算步骤：
 
@@ -214,12 +221,13 @@ Alice | Charlie| David
 ​	下面我们用一个例子来说明有向权重图中Dijkstra算法的计算步骤，起始顶点为 $A$ ，如图 4-8 所示。
 
 <center>
-	<img src="IMG/Dijkstra.png" width="70%" alt="storage hierarchy" />
+	<img src="fig/Dijkstra.png" width="70%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-8 迪杰斯特拉算法 Dijkstra 示例
 	</div>
 </center>
+
 
 以下为计算步骤：
 
@@ -241,12 +249,13 @@ Alice | Charlie| David
 ​	在有向图中，如果两个顶点u、ｖ间存在一条从ｕ到ｖ的有向路径，同时还存在一条从ｖ到ｕ的有向路径，则称这两个顶点**强连通**。如果该有向图的每两个顶点都强连通，则称该图是一个**强连通图**。强连通分量是指由强连通的一组顶点构成的子图，这个子图本身也是一个强连通图。如图 4-9 所示，子图{1, 2, 4, 5}是一个强连通分量，因为顶点1、2、4、5两两可到达，{3}，{6}也是两个强连通分量。
 
 <center>
-	<img src="IMG/强连通.png" width="40%" alt="storage hierarchy" />
+	<img src="fig/强连通.png" width="40%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-9 强连通图 示例
 	</div>
 </center>
+
 
 
 ​	Kosaraju算法和**Tarjan算法**是两个常见的强连通分量分解算法。Kosaraju算法使用两次深度优先搜索来找到强连通分量；Tarjan算法使用一次深度优先搜索和栈来确定强连通分量。我们重点介绍Tarjan算法，该算法能够在线性时间复杂度内计算出所有的强连通分量，时间复杂度为 $O(V+E)$ （其中 $V$ 是节点数，$E$ 是边数），并具有良好的可伸缩性，其运行时间与顶点数量呈线性关系。
@@ -260,12 +269,13 @@ Alice | Charlie| David
 ​	我们沿用图 4-9 的例子来说明Tarjan算法的计算步骤，具体流程如图 4-10 所示。
 
 <center>
-	<img src="IMG/tarjan.png" width="70%" alt="storage hierarchy" />
+	<img src="fig/tarjan.png" width="70%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-10 tarjan算法 示例
 	</div>
 </center>
+
 
 以下为计算步骤：
 
@@ -282,12 +292,13 @@ Alice | Charlie| David
 ​	在无向图中，**连通分量**也称弱连通分量，是由相互连接的一组顶点所构成的子图。在连通分量中，任意两个顶点能够互相到达，并且不与其他连通分量中的顶点连接。如图 4-11 所示，绿色点组成了一个连通分量，蓝色点组成了一个连通分量。
 
 <center>
-	<img src="IMG/弱连通.png" width="30%" alt="storage hierarchy" />
+	<img src="fig/弱连通.png" width="30%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-11 弱连通图 示例
 	</div>
 </center>
+
 
 ​	与强连通分量不同的是，强连通分量是有向图中的概念，而连通分量是无向图中的概念。有很多算法可以求解无向图的连通分量，我们在4.3.1节中介绍的深度优先搜索算法和广度优先搜索算法就能很好地解决问题。我们在这一小节介绍一种新的算法——**并查集（Union-Find）算法**。
 
@@ -300,12 +311,13 @@ Alice | Charlie| David
 ​	我们沿用图 4-11 的例子来说明并查集算法的计算步骤，具体流程如图 4-12 所示。
 
 <center>
-	<img src="IMG/并查集.png" width="50%" alt="storage hierarchy" />
+	<img src="fig/并查集.png" width="50%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-12 并查图算法 示例
 	</div>
 </center>
+
 
 以下为计算步骤：
 
@@ -321,12 +333,13 @@ Alice | Charlie| David
 ​	标签传播算法会进行多轮迭代，以达到一个较好的社区划分。在初始化时，每个顶点会被赋予一个唯一的标签，这个标签可以是每个顶点的ID或是其它的指定标识符。在每一轮迭代传播的过程中，每个顶点会根据其邻居顶点的标签更新自己的标签，具体来说，顶点会选择其邻居顶点中出现频率最高的标签，如果存在多个标签具有相同的出现频率，则随机选择一个，直到每个顶点的标签都传播完毕。然后进行下一轮迭代，重复上述的传播方式。标签传播的收敛条件一般是所有节点的标签在迭代中不再发生变化，或者达到预设的最大迭代次数。标签传播计算的过程示例如图 4-13 所示。
 
 <center>
-	<img src="IMG/标签传播.png" width="50%" alt="storage hierarchy" />
+	<img src="fig/标签传播.png" width="50%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-13 标签传播 示例
 	</div>
 </center>
+
 **使用场景**
 
 ​	标签传播算法最早由Usha Nandini Raghavan、Réka Albert和Soundar Kumara于2007年提出。该算法具有简单、高效的特点，旨在高效地检测大规模网络中的社区结构，并能在实际应用中展示出色的性能，如社交网络分析、文本分类、图像处理等领域。
@@ -348,12 +361,13 @@ $$
 ​	**鲁汶算法（Louvain Algorithm）**是一种基于模块度优化的社区检测算法。该算法通过两阶段的迭代过程逐步优化模块度，分别是局部移动阶段和社区聚合阶段。在局部移动阶段，初始化每个顶点为一个单独的社区，遍历每个顶点，将其移动到相邻社区中，使得模块度增益最高，接着重复前面的步骤，直到没有顶点移动能够进一步提高模块度。在社区聚合阶段，将每个社区视为一个单独的顶点，构建新的简化图，在该简化图上重复局部移动阶段的操作，接着重复该过程直到整个图的模块度不再变化或达到最大迭代次数。鲁汶算法第一轮迭代计算的过程示例如图 4-14 所示。
 
 <center>
-	<img src="IMG/鲁汶.png" width="80%" alt="storage hierarchy" />
+	<img src="fig/鲁汶.png" width="80%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-14 鲁汶算法 示例
 	</div>
 </center>
+
 **使用场景**	
 
 ​	鲁汶算法以比利时鲁汶大学命名，由Vincent D. Blondel, Jean-Loup Guillaume, Renaud Lambiotte和Etienne Lefebvre于2008年提出。该算法通过最大化模块度来识别网络中的社区结构，是一种贪心算法。由于其高效性和通用性，鲁汶算法可以应用于任何具有网络结构且可能存在内部社区结构的场景。
@@ -365,12 +379,13 @@ $$
 ​	相似度算法主要基于向量来计算顶点之间的相似度。通俗来说，相似度用于计算顶点向量之间的距离，距离越近则相似程度越高。有许多不同的方法来衡量顶点之间的相似程度，如余弦相似度、欧式相似度等。通过应用不同的相似度计算，可以确定在某个场景下相似的顶点，从而进行相关的分析或处理。
 
 <center>
-	<img src="IMG/相似度.png" width="50%" alt="storage hierarchy" />
+	<img src="fig/相似度.png" width="50%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-15 相似度 示例
 	</div>
 </center>
+
 
 ​	在这一小节中，为了展示不同的相似度的计算区别，我们对每种相似度计算都使用共同的例子来说明。如图 4-15 所示，可以观察到顶点$C$的邻居为$\{B, A\}$，顶点F的邻居为$\{A, E, D\}$，顶点$C,F$的向量表示可以选择将其邻居信息进行**独热编码（One-hot Encoding）**，独热编码可以将离散特征值转换成一组二进制向量表示，其创建流程为：创建一个长度为 $N$ 的二进制向量，其中 $N$ 是离散特征取值的总数。在图 4-15 中，顶点$C$的邻居为$\{B, A\}$，顶点$F$的邻居为$\{A, E, D\}$，因此 $N$ 为4，即$\{A, B, D, E\}$。将二进制向量中对应离散特征取值的位置设置为1，其余位置设置为0，则顶点C的向量表示为$[1, 1, 0, 0]$，顶点F的向量表示为$[1, 0, 1, 1]$。
 
@@ -443,12 +458,13 @@ $$
 
 
 <center>
-	<img src="IMG/子图同构.png" width="50%" alt="storage hierarchy" />
+	<img src="fig/子图同构.png" width="50%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-16 子图匹配 示例
 	</div>
 </center>
+
 
 ​	子图匹配算法主要分为基于深度优先搜索和基于广度优先搜索的子图同构算法。前者利用递归相对易于实现，且可以配合剪枝以减少不必要的计算；后者通过逐层扩展，在某些情况下可能更快确定同构子图。本节中的主要介绍对象Ullmann算法是基于深度优先搜索实现的，该算法主要利用深度优先搜索结合剪枝技术来提高效率。
 
@@ -495,12 +511,13 @@ $$
 ​	下面我们用一个简单的例子来图解Ullmann算法的过程，图 $H$ 为模式图，图 $G$ 为宿主图，颜色相同的顶点表示标签相同，如图 4-17 所示。
 
 <center>
-	<img src="IMG/ullmann.png" width="50%" alt="storage hierarchy" />
+	<img src="fig/ullmann.png" width="50%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-17 Ullmann算法 示例
 	</div>
 </center>
+
 
 1. 创建候选矩阵 $M$ ，模式图 $H$ 顶点有4个，宿主图 $G$ 顶点有5个，因此矩阵 $M$ 为4行5列。先按照顶点标签的匹配生成候选矩阵，则矩阵 $M=\left[
     \begin{matrix}
@@ -549,22 +566,24 @@ $$
 ​	环路匹配是指环路上依次经过的顶点（边）类型与目标环路的顶点（边）类型一一对应，且环路长度相同。其中环路是指起点和终点是同一个顶点的一条路径。例如，在班级教师网络中，同一个班级的语数英老师存在合作关系。图 4-18 是四个班级的教师网络，其中顶点$A、E$是语文老师，顶点$B、F$是英语老师，顶点$C、D是$数学老师，其中部分教师同时教授多个班级，教师列表存在重叠，从下图可以找到如 $A-C-F-E-D-B-A$ 这样的环路，因此教师顶点$A、B、C、D、E、F$同属于一个教室圈。同时，将这四个班级拆分开，还有类似 $A-C-B-A、B-D-E-B$ 这样的小环路。
 
 <center>
-	<img src="IMG/环路匹配.png" width="80%" alt="storage hierarchy" />
+	<img src="fig/环路匹配.png" width="80%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-18 环路匹配 示例
 	</div>
 </center>
 
+
 ​	路径匹配是指根据给定的路径模式找出相应路径的过程。其中路径模式是指图中一系列通过边相连的顶点的特定组合，不同路径模式的区别在于顶点（边）类型、属性以及路径长度的不同。通常情况下，路径匹配算法包括深度优先搜索、广度优先搜索和图遍历等算法，为了求解特定规则下的最短路径问题，也可以使用其他寻路算法。图 4-19 展示了一个属性值递增且长度为4的路径匹配。
 
 <center>
-	<img src="IMG/路径匹配.png" width="75%" alt="storage hierarchy" />
+	<img src="fig/路径匹配.png" width="75%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-19 路径匹配 示例
 	</div>
 </center>
+
 
 ### 4.3.5 中心性算法
 
@@ -585,12 +604,13 @@ $$
 ​	式中，$N(u)$ 表示顶点 $u$ 的邻居集；$w_{ui}$ 表示顶点 $u$ 到顶点 $i$ 的边权重。
 
 <center>
-	<img src="IMG/度中心性.png" width="75%" alt="storage hierarchy" />
+	<img src="fig/度中心性.png" width="75%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-20 度中心性算法 示例
 	</div>
 </center>
+
 
 ​	图 4-20 是一个较为简单的图结构，左图为非带权图，右图为带权图。我们来尝试计算每个顶点的出度中心性，计算结果如下：
 
@@ -616,12 +636,13 @@ $$
 ​	式中，$n$ 是顶点 $u$ 所在的连通子图的顶点数；$d(u,i)$ 是顶点 $u$、$i$ 之间的最短路径长度。
 
 <center>
-	<img src="IMG/接近中心性.png" width="35%" alt="storage hierarchy" />
+	<img src="fig/接近中心性.png" width="35%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-21 接近中心性算法 示例
 	</div>
 </center>
+
 
 ​	我们以图 4-21 的无向图为例，计算每个顶点的接近中心性，并确定最适合作为传播中心的顶点。图中顶点旁的数字表示以顶点A为例，顶点A到其它顶点的最短路径的长度。计算结果如下：
 
@@ -649,12 +670,13 @@ $$
 ​	式中，$\sigma_{st}$ 表示从顶点 $s$ 到顶点 $t$ 的最短路径数量； $\sigma_{st}(u)$ 表示从顶点 $s$ 到顶点 $t$ 且经过顶点 $u$ 的最短路径数量。
 
 <center>
-	<img src="IMG/中介中心性.png" width="35%" alt="storage hierarchy" />
+	<img src="fig/中介中心性.png" width="35%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-22 中介中心性算法 示例
 	</div>
 </center>
+
 
 
 ​	图 4-22 是一个简单的有向图，我们以顶点A为例计算其中介中心性，计算过程如下：
@@ -691,12 +713,13 @@ $$
 - 当网页顶点PageRank值收敛（变化很小）或达到预设的迭代次数时，算法结束。
 
 <center>
-	<img src="IMG/pagerank.png" width="50%" alt="storage hierarchy" />
+	<img src="fig/pagerank.png" width="50%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-23 pagerank算法 示例
 	</div>
 </center>
+
 
 ​	我们可以把网页之间的相互链接看作有向图，以 图 4-23 为例，顶点 $A ,B,C,D$ 代表网页，顶点之间的有向边代表一个网页到另一个网页的链接，$r_A$ 表示顶点A上一轮迭代得到的PageRank值。则经过此轮迭代，各顶点的PageRank值如下（阻尼系数设置为0.85）：
 
@@ -718,17 +741,18 @@ $$
 ​	图 4-24 是知识图谱的部分主谓宾数据。
 
 <center>
-	<img src="IMG/查询优化1.png" width="90%" alt="storage hierarchy" />
+	<img src="fig/查询优化1.png" width="90%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-24 知识图谱数据 示例
 	</div>
 </center>
 
+
 ​	在图数据库领域，RDF是存储和表达知识图谱的事实标准。图数据库使用邻接表或邻接矩阵将RDF数据集存储为图的形式，其中Subject和Object是图的顶点，Predicate是连接Subject和Object，表示它们之间关系的边，如图 4-25 所示。
 
 <center>
-	<img src="IMG/查询优化2.png" width="90%" alt="storage hierarchy" />
+	<img src="fig/查询优化2.png" width="90%" alt="storage hierarchy" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 4-25 图模型-知识图谱数据 示例

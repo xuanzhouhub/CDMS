@@ -28,7 +28,7 @@
 
 基于以上的规则，我们对本书前面章节提到的购物网站进行关系结构设计，可以得到5个关系模式：
 
-```bson
+```SQL
 购物网站的关系模式设计：
 用户表：User(Uid, Uname, Uadd, Tel), Uid是主码;
 商品表：Product(Pid, Pname, Category, Price, Padd)，Pid是主码;

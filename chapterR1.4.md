@@ -28,7 +28,7 @@
 
 使用学生-课程数据库之前，首先需要定义数据库中的基本表，SQL语言使用**CREATE TABLE**语句来定义表结构，其基本格式如下：
 
-```bson
+```SQL
 CREATE TABLE <表名> ( <列名><数据类型> [列级完整性约束条件]
 					[,<列名><数据类型> [列级完整性约束条件]]
 					........
@@ -40,32 +40,31 @@ CREATE TABLE <表名> ( <列名><数据类型> [列级完整性约束条件]
 
 下例中给出了学生表、课程表和学生选课表的定义：
 
-> [例R1.12] 创建学生表Student。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;CREATE TABLE Student <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Sno CHAR(9) PRIMARY KEY, &nbsp; &nbsp;/\*列级完整性约束条件，Sno是主码\*/ <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sname CHAR(20) NOT NULL,  &nbsp; &nbsp;/\*列级完整性约束条件，Sname不能取空值\*/ <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gender CHAR(2),   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Age INT,   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dept CHAR(10)   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);
-
-> [例R1.13] 创建课程表Course。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;CREATE TABLE Course <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Cno CHAR(4) PRIMARY KEY, &nbsp; &nbsp;/\*列级完整性约束条件，Cno是主码\*/ <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cname CHAR(40) UNIQUE,  &nbsp; &nbsp;/\*列级完整性约束条件，Cname取唯一值\*/ <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Credit SMALLINT   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);
-
-> [例R1.14] 创建学生选课表SC。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;CREATE TABLE SC <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Sno CHAR(9),  <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sno CHAR(4), <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Grade SMALLINT,   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY(Sno,Cno), &nbsp; &nbsp;/\*表级完整性约束条件，Sno和Cno共同构成主码\*/   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FOREIGN KEY(Sno) REFERENCES Student(Sno), &nbsp; &nbsp;/\*表级完整性约束条件，Sno是外码，被参照表是Student\*/   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FOREIGN KEY(Cno) REFERENCES Course(Cno) &nbsp; &nbsp;/\*表级完整性约束条件，Cno是外码，被参照表是Course\*/   <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);
-
+```SQL
+[例R1.12] 创建学生表Student
+CREATE TABLE Student(
+Sno CHAR(9) PRIMARY KEY,/*列级完整性约束条件，Sno是主码*/
+Sname CHAR(20) NOT NULL, /*列级完整性约束条件，Sname不能取空值*/
+Gender CHAR(2),  
+Age INT, 
+Dept CHAR(10)
+);
+[例R1.13] 创建课程表Course
+CREATE TABLE Course(
+Cno CHAR(4) PRIMARY KEY,/*列级完整性约束条件，Cno是主码*/
+Cname CHAR(40) UNIQUE, /*列级完整性约束条件，Cname取唯一值*/
+Credit SMALLINT
+);
+[例R1.14] 创建学生选课表SC
+CREATE TABLE SC(
+Sno CHAR(9),
+Sno CHAR(4),
+Grade SMALLINT,
+PRIMARY KEY(Sno,Cno), &nbsp; &nbsp;/*表级完整性约束条件，Sno和Cno共同构成主码*/
+FOREIGN KEY(Sno) REFERENCES Student(Sno),/*表级完整性约束条件，Sno是外码，被参照表是Student*/
+FOREIGN KEY(Cno) REFERENCES Course(Cno) /*表级完整性约束条件，Cno是外码，被参照表是Course*/ 
+);
+```
 
 学生表和课程表的主码约束只涉及一个属性，所以可以定义在列级上，而学生选课表的主码约束涉及两个属性，所以必须定义在表级上。外码约束只有表级约束，它用于实现表之间的参照完整性。上例中的外码约束表示，学生选课表的学号依赖于学生表的学号，学生选课表的课程号依赖于课程表的课程号，这符合现实意义，即选课的学生一定来自于学生表中的学生，学生选修的课程一定来自于课程表。
 
@@ -73,7 +72,7 @@ CREATE TABLE <表名> ( <列名><数据类型> [列级完整性约束条件]
 
 随着应用环境和应用需求的变化，有时需要修改已建立好的基本表。SQL语言使用**ALTER TABLE**语句修改基本表，其基本格式如下：
 
-```bson
+```SQL
 ALTER TABLE <表名> 
 [ ADD [COLUMN] <新列名><数据类型> [完整性约束] ] 
 [ ADD <表级完整性约束> ] 
@@ -86,26 +85,28 @@ ALTER TABLE <表名>
 虽然关系数据库管理系统提供了修改基本表的功能，但是在应用程序开发中并不提倡使用这些操作。因为对于关系数据库而言，一旦允许程序访问数据库中的数据，进行交互时，它的假设前提就是数据的组织形式或者表的模式已经定义好并且已具有完整的约束条件。
 
 下面给出了修改表的一些例子：
-
-> [例R1.15] 给学生表新增“入学时间”列，数据类型为日期型，列约束条件为非空。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE Student ADD Entrance DATE NOT NULL;
-
-> [例R1.16] 将学生表中性别的数据类型由字符串改为整数。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE Student ALTER COLUMN Gender INT;
+```SQL
+[例R1.15] 给学生表新增“入学时间”列，数据类型为日期型，列约束条件为非空。
+ALTER TABLE Student ADD Entrance DATE NOT NULL; 
+[例R1.16] 将学生表中性别的数据类型由字符串改为整数。
+ALTER TABLE Student ALTER COLUMN Gender INT;
+```
 
 （3） 删除表
 
 当不再需要某个基本表时，SQL语言使用**DROP TABLE**语句删除基本表，其基本格式如下：
 
-```bson
+```SQL
 DROP TABLE <表名> [CASCADE | RESTRICT] ；
 ```
+
 其中，CASCADE关键字指级联删除，即删除基本表的同时删除基本表的相关依赖对象，如索引、触发器，有的关系数据库管理系统还会同时删除视图。读者可以查阅使用产品的用户手册，了解具体的删除策略；RESTRICT表示如果预删除的基本表被其他表的约束所引用（如，FOREIGN KEY）或者基本表有视图、触发器、存储过程和函数时，则基本表不能被删除。默认情况下设置为RESTRICT。
 
 下例给出了删除学生表的SQL语句：
-
-> [例R1.17] 删除学生表。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; DROP TABLE Student CASCADE;
+```SQL
+[例R1.17] 删除学生表
+DROP TABLE Student CASCADE;
+```
 
 基本表被删除时，表的定义以及表中的数据都将一起被删除。由于学生选课表SC通过外码Sno引用了学生表Student，因此Student表被删除的同时SC也将被级联删除。
 
@@ -117,7 +118,7 @@ DROP TABLE <表名> [CASCADE | RESTRICT] ；
 
 SQL语言使用CREATE INDEX语句来创建索引，其基本格式如下：
 
-```bson
+```SQL
 CREATE [UNIQUE] [CLUSTER] INDEX <索引名> 
 ON <表名> ( <列名> [ASC | DESC] 
 		  [, <列名> [ASC | DESC]] ....)；
@@ -126,18 +127,20 @@ ON <表名> ( <列名> [ASC | DESC]
 
 下例给出了在学生表、课程表和学生选课表上创建索引的定义：
 
-> [例R1.18] 在学生表上按学号升序建唯一索引。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; CREATE UNIQUE INDEX Stusno ON Student(Sno); <br>
-> [例R1.19] 在课程表上按课程号升序建唯一索引。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; CREATE UNIQUE INDEX Coucno ON Course(Cno); <br>
-> [例R1.20] 在学生选课表上按学号升序和课程号降序建唯一索引。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; CREATE UNIQUE INDEX SCno ON SC(Sno ASC, Cno DESC);
+```SQL
+[例R1.18] 在学生表上按学号升序建唯一索引。
+CREATE UNIQUE INDEX Stusno ON Student(Sno); 
+[例R1.19] 在课程表上按课程号升序建唯一索引。
+CREATE UNIQUE INDEX Coucno ON Course(Cno); 
+[例R1.20] 在学生选课表上按学号升序和课程号降序建唯一索引。
+CREATE UNIQUE INDEX SCno ON SC(Sno ASC, Cno DESC);
+```
 
 （2）修改索引
 
 对已经建立的索引，SQL语言使用ALTER INDEX语句来进行修改，其基本格式如下：
 
-```bson
+```SQL
 ALTER INDEX <旧索引名>  RENAME TO <新索引名>；
 ```
 
@@ -147,11 +150,14 @@ ALTER INDEX <旧索引名>  RENAME TO <新索引名>；
 （3）删除索引
 
 SQL语言使用DROP INDEX来删除不必要的索引，其基本格式如下：
-```bson
+```SQL
 DROP INDEX <索引名> ；
 ```
-> [例R1.22] 删除学生表的Stusno索引。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; DROP INDEX  Stusno;
+
+```SQL
+[例R1.22] 删除学生表的Stusno索引。
+DROP INDEX  Stusno;
+```
 
 删除索引时，数据库管理系统会同时将索引的定义从数据字典中删除。
 

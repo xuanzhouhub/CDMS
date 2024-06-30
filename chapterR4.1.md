@@ -9,7 +9,7 @@
 
 事务的基本定义如下：
 
-```bson
+```SQL
 BEGIN TRANSACTION 
 SQL语句1  /*可以是SELECT,UPDATE，DELETE，INSERT语句*/
 [SQL语句2......]
@@ -18,19 +18,19 @@ COMMIT/ROOLBACK;
 事务由BEGIN TRANSACTION和COMMIT/ROLLBACK之间的所有SQL语句组成。其中，BEGIN TRANSACTION表示事务的开始，COMMIT和ROLLBACK表示事务的结束。COMMIT表示事务提交，即事务中所有UPDATE、DELETE、INSERT操作产生的结果已写回磁盘，事务正常结束；ROLLBACK表示事务回滚，即在执行过程中事务因某种故障不能继续执行，那么撤销已经完成的操作，使数据库回滚到事务开始之前的状态。
 
 下面给出转账交易的事务定义。
-
-> [例R4.1] 账户U1向账户U2转账50元（事务T0） 。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;BEGIN TRANSACTION <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;SELECT Balance A FROM Deposit WHERE ID='U1' FOR UPDATE;<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;IF(A < 50) <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;THEN ROLLBACK; <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;ELSE<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UPDATE Deposit SET  Balance = A - 50 WHERE ID='U1';<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UPDATE Deposit SET  Balance = Balance + 50 WHERE ID='U2';<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COMMIT;<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-
+```SQL
+[例R4.1] 账户U1向账户U2转账50元（事务T0）。
+BEGIN TRANSACTION
+SELECT Balance A FROM Deposit WHERE ID='U1' FOR UPDATE;
+IF(A < 50) 
+THEN ROLLBACK; 
+ELSE
+{
+UPDATE Deposit SET  Balance = A - 50 WHERE ID='U1';
+UPDATE Deposit SET  Balance = Balance + 50 WHERE ID='U2';
+COMMIT;
+}
+```
 
 ## 数据访问的正确性
 与查询处理不同，事务包含对数据库的更新、删除和新增操作，这些操作会改变存储在磁盘中的数据，使数据库的状态发生改变。如何保证在事务执行过程中数据库能从一个正确的状态转变为另一个正确的状态，保证数据访问的正确性，这是事务处理的关键。
@@ -59,7 +59,6 @@ COMMIT/ROOLBACK;
 ## 事务处理
 
 在关系型数据库中，事务可以看做一个复杂的数据访问操作，可以使用相同的日志恢复机制和并发控制机制来保证事务的ACID属性。其中日志恢复机制保证事务的原子性和持久性，并发控制机制保证事务的隔离性。
-
 
 
 

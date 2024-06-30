@@ -60,7 +60,7 @@ User { u_id, name, gender, reg_date, fans[u_id], followee[u_id],
 
 综合上述分析，我们发现基于设计二设计的文档模式更适用于博客网站。博客网站应用中经常通过用户ID（u\_id）来查找该用户发表的文章并按时间顺序排序，因此可以在Doc文档集的u\_id和pub\_date两个属性上构建组合索引，提供查询效率。
 
-
+[**上一页<<**](chapterD3.1.md) | [**>>下一页**](chapterR1.1.md)
 
 
 

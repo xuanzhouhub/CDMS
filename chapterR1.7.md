@@ -11,7 +11,7 @@
 
 SQL语言用CREATE VIEW命令来创建视图，其基本格式如下：
 
-```bson
+```SQL
 CREATE VIEW <视图名> [（<列名1> [, <列名2>] ...）] 
 AS <子查询>
 [WITH CHECK OPTION];
@@ -19,12 +19,14 @@ AS <子查询>
 
 其中子查询是任意的SELECT查询语句；WITH CHECK OPTION表示对视图进行增、删、改操作时要进行校验，保证更新的元组满足视图的定义。
 
-> [例R1.43] 创建男生信息的视图。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;CREATE VIEW M\_Student <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;AS<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;SELECT Sno, Sname, Age,Dept <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;FROM Student <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;WHERE Gender = '男'; <br>
+```SQL
+[例R1.43] 创建男生信息的视图。
+CREATE VIEW M_Student 
+AS
+SELECT Sno, Sname, Age,Dept
+FROM Student
+WHERE Gender = '男';
+```
 
 本例省略了视图M_Student的属性列名，其隐含意思是视图的属性列由子查询中SELECT子句的四个列名组成。关系数据库管理系统执行CREATE VIEW语句时只是把视图的定义存入数据字典，并不执行其中的SELECT语句。只有在对视图查询时，才按视图的定义从基本表中将数据查出。
 
@@ -34,79 +36,76 @@ AS <子查询>
 
 SQL语言用DROP VIEW命令来删除视图，其基本格式为：
 
-```bson
+```SQL
 DROP VIEW <视图名> [CASCADE] ;
 ```
 删除视图其实是将视图的定义从数据字典中删除。如果视图之上还建立了其他视图，那么删除时则需要使用关键词CASCADE，表示将视图和由它导出的所有视图一起删除。
 
 当基本表被删除后，基于基本表创建的所有视图都无法使用，但视图的定义仍存在于数据字典中，此时就需要使用DROP VIEW语句来删除视图。
 
-> [例R1.44] 删除视图M\_Student。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; DROP VIEW M\_Student CASCADE;<br>
+```SQL
+[例R1.44] 删除视图M_Student。
+DROP VIEW M_Student CASCADE;
+```
 
 ## 视图的查询
 
 视图创建之后，就可以对视图进行查询，其基本格式与基本表的查询格式相同。
 
-> [例R1.45] 查询年龄小于19岁的男生学号和姓名。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; SELECT Sno,Sname<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; FROM M\_Student<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; WHERE Age < 19;<br>
+```SQL
+[例R1.45] 查询年龄小于19岁的男生学号和姓名。
+SELECT Sno,Sname
+FROM M_Student
+WHERE Age < 19;
+```
 
 该语句的执行过程是：首先进行有效性检查，检查查询中涉及的视图是否存在。如果存在，则从数据字典中取出视图的定义，把视图定义中的子查询和此查询结合起来，转换成等价的对基本表的新查询，然后执行新查询。
 
 例R1.45转换之后的查询语句为：
-> &nbsp;&nbsp;&nbsp;&nbsp; SELECT Sno,Sname<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; FROM Student<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; WHERE Gender = '男' AND Age < 19;<br>
-
+```SQL
+SELECT Sno,Sname<br>
+FROM Student<br>
+WHERE Gender = '男' AND Age < 19;
+```
 
 ## 视图的更新
 
 更新视图其实是通过视图来增、删、改数据。由于视图是一张虚表，不存储任何数据，因此对视图的更新最终是转换成对基本表的增、删、改。如果定义视图时加上了WITH CHECK OPTION子句，那么执行更新视图SQL时需要检查更新数据是否满足视图的定义，如果不满足定义则不执行操作。
 
-> [例R1.46] 将男生视图M\_Student中学号为2022123的学生姓名改为宇轩。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; UPDATE M\_Student<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; SET Sname = '宇轩' <br>
-> &nbsp;&nbsp;&nbsp;&nbsp; WHERE Sno = '2022123';<br>
-
+```SQL
+[例R1.46] 将男生视图M_Student中学号为2022123的学生姓名改为宇轩。
+UPDATE M_Student
+SET Sname = '宇轩' 
+WHERE Sno = '2022123';
 转换为对基本表更新的SQL为：
-
-> &nbsp;&nbsp;&nbsp;&nbsp; UPDATE Student<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; SET Sname = '宇轩' <br>
-> &nbsp;&nbsp;&nbsp;&nbsp; WHERE Sno = '2022123' AND Gender = '男';<br>
-
-> [例R1.47] 向男生视图M\_Student中插入一个新的学生信息（学号：2022013，姓名：宇轩，年龄：20，系：计算机）。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; INSERT<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; INTO M\_Student <br>
-> &nbsp;&nbsp;&nbsp;&nbsp; VALUES('2022013','宇轩',20,'计算机');<br>
-
+UPDATE Student
+SET Sname = '宇轩' 
+WHERE Sno = '2022123' AND Gender = '男';
+```
+```SQL
+[例R1.47] 向男生视图M_Student中插入一个新的学生信息（学号：2022013，姓名：宇轩，年龄：20，系：计算机）。
+INSERT
+INTO M_Student 
+VALUES('2022013','宇轩',20,'计算机');
 转换为对基本表的插入：
-
-> &nbsp;&nbsp;&nbsp;&nbsp; INSERT<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; INTO M\_Student(Sno,Sname,Gender, Age, Dept) <br>
-> &nbsp;&nbsp;&nbsp;&nbsp; VALUES('2022013','宇轩','男', 20, '计算机');<br>
-
-> [例R1.48] 删除男生视图M\_Student中学号为2022013的学生信息。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; DELETE<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; FROM M\_Student <br>
-> &nbsp;&nbsp;&nbsp;&nbsp; WHERE Sno = '2022013';<br>
-
+INSERT
+INTO M_Student(Sno,Sname,Gender, Age, Dept)
+VALUES('2022013','宇轩','男', 20, '计算机');
+```
+```SQL
+[例R1.48] 删除男生视图M\_Student中学号为2022013的学生信息。
+DELETE
+FROM M_Student
+WHERE Sno = '2022013';
 转换为对基本表的删除：
-
-> &nbsp;&nbsp;&nbsp;&nbsp; DELETE<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; FROM M\_Student <br>
-> &nbsp;&nbsp;&nbsp;&nbsp; WHERE Sno = '2022013' AND Gender = '男';<br>
+DELETE
+FROM M_Student
+WHERE Sno = '2022013' AND Gender = '男';
+```
 
 在关系数据库中，不是所有的视图都能被更新。如果对某个视图的增、删、改操作不能转换成对应基本表的增、删、改，那么该视图就不能被更新。
 
 视图除了使查询语句SQL的逻辑更加清晰，简化用户的SQL编写之外，还能实现用户的权限访问功能。
-
-
-
-
-
-
 
 
 

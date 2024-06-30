@@ -4,13 +4,12 @@
 
 
 ## 选择运算算法
-
-> [例R3.2] 查询学号为2022001的学生。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;SELECT * <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;FROM Student<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;WHERE Sno = '2022001' ;<br>
-
-
+```SQL
+[例R3.2] 查询学号为2022001的学生。
+SELECT *
+FROM Student
+WHERE Sno = '2022001' ;
+```
 上述查询语句中，Student表中的数据以物理页的方式进行组织。表中的学生信息存放在多个物理页中，每个物理页中存放多个学生的信息。多个物理页可以通过Innode结构或者B+树索引结构组织起来，假设B+树索引是基于主码Sno构建的，索引的层数为L，Student表占用了B个物理页。
 
 选择运算只涉及一张表，一般采用全表扫描或者索引扫描的算法。
@@ -24,9 +23,11 @@
 
 ## 投影运算算法
 
-> [例R3.3] 查询学生表中学生所在的系。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;SELECT DISTINCT Dept <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;FROM Student;<br>
+```SQL
+[例R3.3] 查询学生表中学生所在的系。
+SELECT DISTINCT Dept 
+FROM Student;
+```
 
 该查询语句中包含选择运算和投影运算，首先通过全表扫描算法依次读取Student表的元组，得到每个元组的Dept值，然后使用投影运算算法对得到的Dept值进行去重。
 
@@ -42,10 +43,12 @@
 
 ## 连接运算算法
 
-> [例R3.4] 查询学生及其选修课程的信息。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;SELECT * <br>
-> &nbsp;&nbsp;&nbsp;&nbsp;FROM Student S, SC R<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;WHERE S.Sno = R.Sno;<br>
+```SQL
+[例R3.4] 查询学生及其选修课程的信息。
+SELECT * 
+FROM Student S, SC R
+WHERE S.Sno = R.Sno;
+```
 
 上述查询语句是Student表（S表）与SC表（R表）在主码Sno上的等值连接运算。常用的连接运算算法有：嵌套循环连接（Nested Loop Join）、排序合并连接（Merge Join）、散列连接（Hash Join）以及索引连接（Index Join）。下面将分别进行介绍。
 
