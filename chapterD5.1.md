@@ -34,7 +34,7 @@
 基于以上的规则，我们能够进行文档数据库的逻辑结构设计，确定某一特定应用数据库中的数据应该如何表示和组织。以下以本书前面章节提到的购物网站为例，展示文档数据库的逻辑结构设计过程。图R5.2展示了购物网站的ERD概念模型。
 
 <center>
-	<img src="fig/ch5.1-E-Rshopping.jpg" width="85%" alt="E-R" />
+	<img src="fig/chD5.1-E-Rshopping.jpg" width="85%" alt="E-R" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 R5.2 购物网站ERD概念模型
