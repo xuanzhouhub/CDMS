@@ -8,11 +8,12 @@
 	<img src="fig/ch5.2-E-Rmodel.jpg" width="85%" alt="E-R" />
 	<br>
 	<div display: inline-block; padding : 2px>
-		图 R5.3 博客网站的ERD
+		图 R3.3 博客网站的ERD
 	</div>
 </center>
 
-图R5.2展示了博客网站的ERD概念模型。有了概念模型，我们可以根据文档数据库的结构设计规则得到一下的文档模式设计。
+
+图R3.3展示了博客网站的ERD概念模型。有了概念模型，我们可以根据文档数据库的结构设计规则得到一下的文档模式设计。
 
 ```bson
 设计一：文档模式中不存在嵌套文档，ERD转换为用户、文章、评论三个文档集
@@ -39,15 +40,16 @@ User { u_id, name, gender, reg_date, fans[u_id], followee[u_id],
 
 设计三在设计二的基础之上，将文章文档集Doc以文档数组的形式嵌入用户文档集User中。
 
-哪一种文档模式设计更适用于博客网站呢？我们先来回顾一下博客网站的界面和功能。图R5.4中展示了博客网站的首页、博客展示界面、个人主页以及博客编辑页面。
+哪一种文档模式设计更适用于博客网站呢？我们先来回顾一下博客网站的界面和功能。图R3.4中展示了博客网站的首页、博客展示界面、个人主页以及博客编辑页面。
 
 <center>
 	<img src="fig/ch5.2-interface.jpg" width="85%" alt="interface" />
 	<br>
 	<div display: inline-block; padding : 2px>
-		图 R5.4 博客网站前端功能界面
+		图 R3.4 博客网站前端功能界面
 	</div>
 </center>
+
 
 下面我们分别对比三种设计在实现各个界面功能的优缺点：
 
