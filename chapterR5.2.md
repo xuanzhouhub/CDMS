@@ -57,7 +57,7 @@ Order关系模式的主码是订单号Oid、用户号Uid和商品号Pid，也就
 > &nbsp;&nbsp;&nbsp;&nbsp;OrderLine(<u>Oid, Pid</u>,Quantity),其中Oid和Pid为主码<br>
 
 <center>
-	<img src="fig/chR3.2-Shoppingschema2.jpg" width="99%" alt="E-R" />
+	<img src="fig/chR5.2-Shoppingschema2.jpg" width="99%" alt="E-R" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 R5.3 用户购物的四个模式User、Product、Order、OrderLine
