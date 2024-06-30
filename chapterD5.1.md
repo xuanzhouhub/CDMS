@@ -7,12 +7,13 @@
 文档数据库的逻辑结构设计其实是将概念设计阶段设计好的基于ERD的概念模型转换成文档模型，它的要点是如何将ERD的实体、实体的属性和实体之间的联系转换成文档模式。所谓的文档模式是对文档集的描述。
 
 <center>
-	<img src="fig/chD5.1-E-Rforemployee.jpg" width="85%" alt="E-R" />
+	<img src="fig/ch5.1-E-Rforemployee.jpg" width="85%" alt="E-R" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 R5.1 员工与项目ERD概念模型
 	</div>
 </center>
+
 
 
 文档数据库支持嵌套文档、数组以及文档数组等多种结构，因此基于ERD概念模型生成的文档模型也是多种多样的。目前，没有一套文档数据库结构设计的统一范式。我们这里只介绍ERD转换成文档模型的常用规则。
@@ -33,12 +34,13 @@
 基于以上的规则，我们能够进行文档数据库的逻辑结构设计，确定某一特定应用数据库中的数据应该如何表示和组织。以下以本书前面章节提到的购物网站为例，展示文档数据库的逻辑结构设计过程。图R5.2展示了购物网站的ERD概念模型。
 
 <center>
-	<img src="fig/chD5.1-E-Rshopping.jpg" width="85%" alt="E-R" />
+	<img src="fig/ch5.1-E-Rshopping.jpg" width="85%" alt="E-R" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 R5.2 购物网站ERD概念模型
 	</div>
 </center>
+
 
 如果按“文档模型中不存在嵌套文档”的规则，可以得到以下的文档模式设计：
 
