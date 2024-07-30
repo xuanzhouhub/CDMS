@@ -1,165 +1,100 @@
-# 数据定义
+# 数据操纵
 
-从本节开始，我们以学生-课程数据库为例来介绍SQL的数据定义、数据查询和数据操纵语句。本节主要讲解对表结构和索引结构的定义。
-
-## 学生-课程数据库
-
-学生-课程数据库中包括以下三个表：
-
-* 学生表：Student (<u>Sno</u>, Sname, Gender, Age, Dept)；
-* 课程表：Course (<u>Cno</u>, Cname, Credit)；
-* 学生选课表：SC (<u>Sno,Cno</u>,Grade)；
-
-表中的主码以下划线进行表示。各个表中的数据示例如图5.2所示
-
-<center>
-	<img src="fig/chR1.1-RelationModel.jpg" width="99%" alt="Projection" />
-	<br>
-	<div display: inline-block; padding : 2px>
-		图 R1.9 学生-课程数据库的数据示例
-	</div>
-</center>
+数据操纵包括三种操作：向表中添加若干行数据、修改表中的数据和删除表中的若干行数据。在SQL中分别对应INSERT、UPDATE和DELETE三类语句。
 
 
+## 数据插入
 
-## 表的定义、修改与删除
-
-（1） 定义表 
-
-使用学生-课程数据库之前，首先需要定义数据库中的基本表，SQL语言使用**CREATE TABLE**语句来定义表结构，其基本格式如下：
+当表结构定义好之后，就能够往表里插入数据。SQL的数据插入语句INSERT通常有两种形式，一种是插入元组，另一种是插入子查询结果。本小节主要介绍插入元组的INSERT语句，其基本格式如下：
 
 ```SQL
-CREATE TABLE <表名> ( <列名><数据类型> [列级完整性约束条件]
-					[,<列名><数据类型> [列级完整性约束条件]]
-					........
-					[,<表级完整性约束条件>] )
+INSERT 
+INTO <表名> [（<属性列1> [，<属性列2>] ...）]
+VALUES (<常量1> [，<常量2>]...);
 ```
-建表时需要定义表名、所有的属性列名和列的数据类型，同时还可以定义与列或者与表有关的完整性约束条件。SQL标准支持了多种数据类型，常用的数据类型包括char(n)，varchar(n)，clob，blob，int/smallint/bigint/，numeric(p,d)，decimal(p,d)，real，double，float(n)，boolean，date，time等。要注意，不同的关系数据库管理系统中支持的数据类型不完全相同。如果完整性约束条件涉及多个属性列，则必须定义在表级上，否则既可以定义在列级也可以定义在表级。
 
-表的定义会被存入系统的数据字典中。数据字典其实是关系数据库管理系统中的系统表，它记录了数据库中所有的定义信息，包括表结构、完整性约束，索引，视图，用户的操作权限以及统计信息等。当用户操作表中数据时，关系数据库管理系统会根据数据字典中的内容自动检查该操作是否违背了相关定义。
-
-下例中给出了学生表、课程表和学生选课表的定义：
+INTO子句中指定要插入数据的基础表以及要插入的属性列名，VALUES子句指定插入元组的各属性值，其中常量1为新元组属性列1的值，常量2为新元组属性列2的值，......。
+此外，INTO子句中可以不指定任何属性列名，那么，VALUES子句中新插入的元组必须在每个属性列上均有值，且要按照表定义中属性列的顺序。
 
 ```SQL
-[例R1.12] 创建学生表Student
-CREATE TABLE Student(
-Sno CHAR(9) PRIMARY KEY,/*列级完整性约束条件，Sno是主码*/
-Sname CHAR(20) NOT NULL, /*列级完整性约束条件，Sname不能取空值*/
-Gender CHAR(2),  
-Age INT, 
-Dept CHAR(10)
-);
-[例R1.13] 创建课程表Course
-CREATE TABLE Course(
-Cno CHAR(4) PRIMARY KEY,/*列级完整性约束条件，Cno是主码*/
-Cname CHAR(40) UNIQUE, /*列级完整性约束条件，Cname取唯一值*/
-Credit SMALLINT
-);
-[例R1.14] 创建学生选课表SC
-CREATE TABLE SC(
-Sno CHAR(9),
-Sno CHAR(4),
-Grade SMALLINT,
-PRIMARY KEY(Sno,Cno), &nbsp; &nbsp;/*表级完整性约束条件，Sno和Cno共同构成主码*/
-FOREIGN KEY(Sno) REFERENCES Student(Sno),/*表级完整性约束条件，Sno是外码，被参照表是Student*/
-FOREIGN KEY(Cno) REFERENCES Course(Cno) /*表级完整性约束条件，Cno是外码，被参照表是Course*/ 
-);
+[例R1.36] 向Student表中插入一个新学生元组（学号：2022013，姓名：宇轩，性别：男，年龄：20，系：计算机）。
+INSERT 
+INTO Student
+VALUES('2022013','宇轩','男',20,'计算机'); 
+另一种SQL表示 
+INSERT 
+INTO Student(Sno, Sname,Age, Gender,Dept)
+VALUES('2022013','宇轩',20,'男','计算机'); 
 ```
-
-学生表和课程表的主码约束只涉及一个属性，所以可以定义在列级上，而学生选课表的主码约束涉及两个属性，所以必须定义在表级上。外码约束只有表级约束，它用于实现表之间的参照完整性。上例中的外码约束表示，学生选课表的学号依赖于学生表的学号，学生选课表的课程号依赖于课程表的课程号，这符合现实意义，即选课的学生一定来自于学生表中的学生，学生选修的课程一定来自于课程表。
-
-（2） 修改表
-
-随着应用环境和应用需求的变化，有时需要修改已建立好的基本表。SQL语言使用**ALTER TABLE**语句修改基本表，其基本格式如下：
+第一种SQL表示中，INTO子句中未指定任何属性列名时，VALUES子句中的新插入的属性列值要与表定义的属性列一致，否则将出错。第二种SQL表示中，INTO子句中指定了属性列名，属性的顺序可以和表定义的顺序不一致，但是VALUES中插入的属性值要与INTO中指定的属性列名对应。另外，VALUES子句中字符串常数要用单引号（英文符号）括起来。
 
 ```SQL
-ALTER TABLE <表名> 
-[ ADD [COLUMN] <新列名><数据类型> [完整性约束] ] 
-[ ADD <表级完整性约束> ] 
-[ DROP [COLUMN] <列名> [CASCADE | RESTRICT] ] 
-[ DROP CONSTRAINT <完整性约束名> [CASCADE | RESTRICT] ] 
-[ ALTER COLUMN <列名><数据类型> ]； 
-```
-修改基本表时可以增加新列、新的列级完整性约束条件，新增表级完整性约束条件，删除表中的列，删除完整性约束条件和修改原有列的定义。删除列和完整性约束条件时可以添加关键字CASCADE和RESTRICT。CASCADE表示级联删除，即删除列和约束条件的同时删除引用该列和该约束条件的其他对象；RESTRICT则指如果该列或该约束条件被其他对象引用，则不能删除。
-
-虽然关系数据库管理系统提供了修改基本表的功能，但是在应用程序开发中并不提倡使用这些操作。因为对于关系数据库而言，一旦允许程序访问数据库中的数据，进行交互时，它的假设前提就是数据的组织形式或者表的模式已经定义好并且已具有完整的约束条件。
-
-下面给出了修改表的一些例子：
-```SQL
-[例R1.15] 给学生表新增“入学时间”列，数据类型为日期型，列约束条件为非空。
-ALTER TABLE Student ADD Entrance DATE NOT NULL; 
-[例R1.16] 将学生表中性别的数据类型由字符串改为整数。
-ALTER TABLE Student ALTER COLUMN Gender INT;
+[例R1.37] 向SC表中插入一条选课记录（学号：2022013，课程号：1，成绩：NULL）。
+INSERT <br>
+INTO SC(Sno, Cno)
+VALUES('2022013','1'); 
+另一种SQL表示 
+INSERT 
+INTO SC
+VALUES('2022013','1',NULL); <br>
 ```
 
-（3） 删除表
+第一种SQL表示中，INTO子句没有指定SC表中的Grade属性列，关系数据库管理系统将在新插入元组的Grade列上自动地赋空值。需要注意的是，表定义时说明了NOT NULL的属性列不能取空值，否则会出错。第二种SQL表示中，INTO子句没有指定SC表的任何属性列，那么VALUES子句中新元组每个属性列上均要有值，因此Grade列上要明确给出空值。
 
-当不再需要某个基本表时，SQL语言使用**DROP TABLE**语句删除基本表，其基本格式如下：
+此外，INSERT还支持一次插入多个元组。
 
 ```SQL
-DROP TABLE <表名> [CASCADE | RESTRICT] ；
+[例R1.38] 向SC表中插入三条选课记录。
+INSERT 
+INTO SC(Sno,Cno)
+VALUES('2022013','1'), ('2022001','3'),('2022191','2'); 
 ```
 
-其中，CASCADE关键字指级联删除，即删除基本表的同时删除基本表的相关依赖对象，如索引、触发器，有的关系数据库管理系统还会同时删除视图。读者可以查阅使用产品的用户手册，了解具体的删除策略；RESTRICT表示如果预删除的基本表被其他表的约束所引用（如，FOREIGN KEY）或者基本表有视图、触发器、存储过程和函数时，则基本表不能被删除。默认情况下设置为RESTRICT。
+## 数据修改
 
-下例给出了删除学生表的SQL语句：
-```SQL
-[例R1.17] 删除学生表
-DROP TABLE Student CASCADE;
-```
-
-基本表被删除时，表的定义以及表中的数据都将一起被删除。由于学生选课表SC通过外码Sno引用了学生表Student，因此Student表被删除的同时SC也将被级联删除。
-
-##  索引的定义与删除
-
-同文档数据库管理系统一样，关系数据库管理系统也提供了索引功能来加快数据的查询。用户可以根据应用需求在基本表上建立一个或者多个索引。
-
-（1） 建立索引
-
-SQL语言使用CREATE INDEX语句来创建索引，其基本格式如下：
+数据的修改操作又称为数据更新。SQL的更新语句UPDATE的基本格式为：
 
 ```SQL
-CREATE [UNIQUE] [CLUSTER] INDEX <索引名> 
-ON <表名> ( <列名> [ASC | DESC] 
-		  [, <列名> [ASC | DESC]] ....)；
+UPDATE <表名>
+SET <列名1>=<表达式1> [,<列名2>=<表达式2>...]
+[WHERE <条件表达式>]
 ```
-索引可以建立在表的一列或者多列上，各列名之间用逗号隔开。创建索引时，还可以指定每个列索引值的排列次序，ASC表示升序排列，DESC表示降序排列，默认情况下为ASC。关键字UNIQUE表示建立的索引为唯一索引，即索引的每一个索引值只对应唯一的元组。CLUSTER表示建立的索引为聚簇索引，即索引中的索引值与对应的元组存放在连续的物理块中。通常，一个基本表只能拥有一个聚簇索引。关系数据库系统会默认为基本表的主键创建聚簇索引。创建的索引定义会被写入数据字典中。
-
-下例给出了在学生表、课程表和学生选课表上创建索引的定义：
+其功能是修改指定表中满足WHERE子句条件的元组。SET子句中<表达式>的值用于取代相应的属性列值。如果省略WHERE子句，则表示修改表中的所有元组。
 
 ```SQL
-[例R1.18] 在学生表上按学号升序建唯一索引。
-CREATE UNIQUE INDEX Stusno ON Student(Sno); 
-[例R1.19] 在课程表上按课程号升序建唯一索引。
-CREATE UNIQUE INDEX Coucno ON Course(Cno); 
-[例R1.20] 在学生选课表上按学号升序和课程号降序建唯一索引。
-CREATE UNIQUE INDEX SCno ON SC(Sno ASC, Cno DESC);
+[例R1.39] 将学生2022013的年龄改为19岁。
+UPDATE Student
+SET Age = 19
+WHERE Sno = '2022013';
+[例R1.40] 将所有男生的年龄增加1岁。
+UPDATE Student
+SET Age = Age + 1
+WHERE Gender = '男'; 
 ```
 
-（2）修改索引
+## 数据删除
 
-对已经建立的索引，SQL语言使用ALTER INDEX语句来进行修改，其基本格式如下：
+删除语句DELETE的基本格式为：
 
 ```SQL
-ALTER INDEX <旧索引名>  RENAME TO <新索引名>；
+DELETE
+FROM <表名>
+[WHERE <条件表达式>]
 ```
 
-> [例R1.21] 将学生选课表的SCno索引名改为SCSno。<br>
-> &nbsp;&nbsp;&nbsp;&nbsp; ALTER INDEX SCno RENAME TO SCSno;
-
-（3）删除索引
-
-SQL语言使用DROP INDEX来删除不必要的索引，其基本格式如下：
-```SQL
-DROP INDEX <索引名> ；
-```
+该功能是从指定表中删除满足WHERE子句条件的所有元组。如果省略WHERE子句则表示删除表中的全部元组，但表的定义仍在字典中。也就是说，DELETE语句删除的是表中的数据，而不是关于表的定义。
 
 ```SQL
-[例R1.22] 删除学生表的Stusno索引。
-DROP INDEX  Stusno;
+[例R1.41] 删除学号为2022013的学生信息。
+DELETE
+FROM Student
+WHERE Sno = '2022013';
+[例R1.42] 删除所有学生的选课记录。
+DELETE<br>
+FROM SC;<br>
 ```
 
-删除索引时，数据库管理系统会同时将索引的定义从数据字典中删除。
+
 
 
 
