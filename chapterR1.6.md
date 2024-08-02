@@ -20,7 +20,7 @@ AS <子查询>
 其中子查询是任意的SELECT查询语句；WITH CHECK OPTION表示对视图进行增、删、改操作时要进行校验，保证更新的元组满足视图的定义。
 
 ```SQL
-[例R1.43] 创建男生信息的视图。
+[例R1.37] 创建男生信息的视图。
 CREATE VIEW M_Student 
 AS
 SELECT Sno, Sname, Age,Dept
@@ -44,7 +44,7 @@ DROP VIEW <视图名> [CASCADE] ;
 当基本表被删除后，基于基本表创建的所有视图都无法使用，但视图的定义仍存在于数据字典中，此时就需要使用DROP VIEW语句来删除视图。
 
 ```SQL
-[例R1.44] 删除视图M_Student。
+[例R1.38] 删除视图M_Student。
 DROP VIEW M_Student CASCADE;
 ```
 
@@ -53,7 +53,7 @@ DROP VIEW M_Student CASCADE;
 视图创建之后，就可以对视图进行查询，其基本格式与基本表的查询格式相同。
 
 ```SQL
-[例R1.45] 查询年龄小于19岁的男生学号和姓名。
+[例R1.39] 查询年龄小于19岁的男生学号和姓名。
 SELECT Sno,Sname
 FROM M_Student
 WHERE Age < 19;
@@ -61,7 +61,7 @@ WHERE Age < 19;
 
 该语句的执行过程是：首先进行有效性检查，检查查询中涉及的视图是否存在。如果存在，则从数据字典中取出视图的定义，把视图定义中的子查询和此查询结合起来，转换成等价的对基本表的新查询，然后执行新查询。
 
-例R1.45转换之后的查询语句为：
+例R1.39转换之后的查询语句为：
 ```SQL
 SELECT Sno,Sname<br>
 FROM Student<br>
@@ -73,7 +73,7 @@ WHERE Gender = '男' AND Age < 19;
 更新视图其实是通过视图来增、删、改数据。由于视图是一张虚表，不存储任何数据，因此对视图的更新最终是转换成对基本表的增、删、改。如果定义视图时加上了WITH CHECK OPTION子句，那么执行更新视图SQL时需要检查更新数据是否满足视图的定义，如果不满足定义则不执行操作。
 
 ```SQL
-[例R1.46] 将男生视图M_Student中学号为2022123的学生姓名改为宇轩。
+[例R1.40] 将男生视图M_Student中学号为2022123的学生姓名改为宇轩。
 UPDATE M_Student
 SET Sname = '宇轩' 
 WHERE Sno = '2022123';
@@ -83,7 +83,7 @@ SET Sname = '宇轩'
 WHERE Sno = '2022123' AND Gender = '男';
 ```
 ```SQL
-[例R1.47] 向男生视图M_Student中插入一个新的学生信息（学号：2022013，姓名：宇轩，年龄：20，系：计算机）。
+[例R1.41] 向男生视图M_Student中插入一个新的学生信息（学号：2022013，姓名：宇轩，年龄：20，系：计算机）。
 INSERT
 INTO M_Student 
 VALUES('2022013','宇轩',20,'计算机');
@@ -93,7 +93,7 @@ INTO M_Student(Sno,Sname,Gender, Age, Dept)
 VALUES('2022013','宇轩','男', 20, '计算机');
 ```
 ```SQL
-[例R1.48] 删除男生视图M\_Student中学号为2022013的学生信息。
+[例R1.42] 删除男生视图M\_Student中学号为2022013的学生信息。
 DELETE
 FROM M_Student
 WHERE Sno = '2022013';
