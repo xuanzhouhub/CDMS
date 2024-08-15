@@ -95,7 +95,7 @@ db.student.aggregate( [
 						        "sname":1,  
 						        "courses":1
 						     }
-						},  /*$projuect阶段*/
+						},  /*$project阶段*/
     					{
     						$limit:3   /*返回查询结果的前3个文档*/
     					}   /*$limit阶段*/

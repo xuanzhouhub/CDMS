@@ -62,8 +62,8 @@
 下面的例子展示了用选择运算来描述数据的读取，并给出了选择运算的结果。选择运算的对象是图R1.1的学生关系。
 
 
-> [例R1.1]  查询姓名为浩宇的学生。 关系运算表示为：$\sigma_{sname='浩宇'}(Student)$，运算结果如图R1.3(a)所示 。<br>
-> [例R1.2] 查询年龄小于19岁的女学生。关系运算表示为：$\sigma_{gender='女' \land age < 19}(Student)$，运算结果如图1.3(b)所示。<br>
+> [例R1.1]  查询姓名为浩宇的学生。 关系运算表示为：$\sigma_{Sname='浩宇'}(Student)$，运算结果如图R1.3(a)所示 。<br>
+> [例R1.2] 查询年龄小于19岁的女学生。关系运算表示为：$\sigma_{Gender='女' \land Age < 19}(Student)$，运算结果如图1.3(b)所示。<br>
 <center>
 	<img src="fig/chR1.2-selection.jpg" width="40%" alt="Selection" />
 	<br>
@@ -78,8 +78,8 @@
 
 下面展示了在图R1.1中学生关系上的投影运算。
 
-> [例R1.3]  查询学生的学号和姓名。 关系运算表示为：$\Pi_{sno,sname}(Student)$，运算结果如图R1.4(a)所示 。<br>
-> [例R1.4] 查询学生的系。关系运算表示为：$\Pi_{dept}(Student)$，运算结果如图R1.4(b)所示。<br>
+> [例R1.3]  查询学生的学号和姓名。 关系运算表示为：$\Pi_{Sno,Sname}(Student)$，运算结果如图R1.4(a)所示 。<br>
+> [例R1.4] 查询学生的系。关系运算表示为：$\Pi_{Dept}(Student)$，运算结果如图R1.4(b)所示。<br>
 
 <center>
 	<img src="fig/chR1.2-projection.jpg" width="30%" alt="Projection" />
@@ -102,7 +102,7 @@
 
 下例中展示了在图R1.1中学生关系和选课关系上的等值连接和自然连接。
 
-> [例R1.5] 查询学生和该学生的选课信息。 等值连接表示为：$Student \Join_{Student.sno=SC.sno} SC$，运算结果如图R1.5(a)所示 。<br>
+> [例R1.5] 查询学生和该学生的选课信息。 等值连接表示为：$Student \Join_{Student.Sno=SC.Sno} SC$，运算结果如图R1.5(a)所示 。<br>
 > [例R1.6] 查询学生和该学生的选课信息。自然连接表示为：$Student \Join SC$，运算结果如图R1.5(b)所示。
 
 <center>
@@ -151,11 +151,22 @@
 </center>
 关系代数运算实际上提供了一种查询方式，允许在多个关系中找到满足查询条件的数据。
 
+## 关系代数表达式
+在上文中，我们介绍了四种基本的关系代数运算，描述了如何在关系模型上进行最简单、基本的数据读取操作。但在现实世界中，用户的数据查询需求是复杂的，单一一种关系代数运算无法充分表达用户的查询需求。因此，我们使用关系代数表达式来描述复杂的查询需求。关系代数表达式是由关系代数运算经有限次复合而成的式子。
+
+下面的例子展示了用关系代数表达式来描述复杂的查询需求，并给出了关系代数表达式的查询结果。
+> [例R1.11] 查询学号为‘2022001’的学生姓名。 关系代数表达式表示为：$\Pi_{Sname}(\sigma_{Sno='2022001'}) Student$，查询结果如图R1.8(a)所示 。<br>
+> [例R1.12] 查询选修3号课程且成绩在90分及以上的所有学生的学号和姓名。 关系代数表达式表示为：$\Pi_{Student.Sno,Sname}(Student \Join_{Student.sno=SC.sno} (\sigma_{Cno='3' \land Grade >= '90'})SC)$，查询结果如图R1.8(b)所示 。<br>
+
+<center>
+	<img src="fig/chR1.2-RelationAlgebra.jpg" width="40%" alt="RelationAlgebra" />
+	<br>
+	<div display: inline-block; padding : 2px>
+		图 R1.8 关系代数表达式举例
+	</div>
+</center>
+
 [**上一页<<**](chapterD3.2.md) | [**>>下一页**](chapterR1.2.md)
-
-
-
-
 
 
 
