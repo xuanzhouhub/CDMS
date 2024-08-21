@@ -49,7 +49,7 @@ SQL支持了多种数据类型，用于定义表中属性的取值域。常用�
 下例中给出了学生表、课程表和学生选课表的定义：
 
 ```SQL
-[例R1.11] 创建学生表Student
+[例1.13] 创建学生表Student
 CREATE TABLE Student(
 Sno CHAR(9) PRIMARY KEY,/*列级完整性约束条件，Sno是主码*/
 Sname CHAR(20) NOT NULL, /*列级完整性约束条件，Sname不能取空值*/
@@ -57,13 +57,13 @@ Gender CHAR(2),
 Age INT, 
 Dept CHAR(10)
 );
-[例R1.12] 创建课程表Course
+[例1.14] 创建课程表Course
 CREATE TABLE Course(
 Cno CHAR(4) PRIMARY KEY,/*列级完整性约束条件，Cno是主码*/
 Cname CHAR(40) UNIQUE, /*列级完整性约束条件，Cname取唯一值*/
 Credit SMALLINT
 );
-[例R1.13] 创建学生选课表SC
+[例1.15] 创建学生选课表SC
 CREATE TABLE SC(
 Sno CHAR(9),
 Sno CHAR(4),
@@ -94,9 +94,9 @@ ALTER TABLE <表名>
 
 下面给出了修改表的一些例子：
 ```SQL
-[例R1.14] 给学生表新增“入学时间”列，数据类型为日期型，列约束条件为非空。
+[例1.16] 给学生表新增“入学时间”列，数据类型为日期型，列约束条件为非空。
 ALTER TABLE Student ADD Entrance DATE NOT NULL; 
-[例R1.15] 将学生表中性别的数据类型由字符串改为整数。
+[例1.17] 将学生表中性别的数据类型由字符串改为整数。
 ALTER TABLE Student ALTER COLUMN Gender INT;
 ```
 
@@ -112,13 +112,13 @@ DROP TABLE <表名> [CASCADE | RESTRICT] ；
 
 下例给出了删除学生表的SQL语句：
 ```SQL
-[例R1.16] 删除学生表
+[例1.18] 删除学生表
 DROP TABLE Student CASCADE;
 ```
 
 基本表被删除时，表的定义以及表中的数据都将一起被删除。由于学生选课表SC通过外码Sno引用了学生表Student，因此Student表被删除的同时SC也将被级联删除。
 
-
+[**上一页<<**](chapter1.7.md) | [**>>下一页**](chapterR1.9.md)
 
 
 

@@ -99,15 +99,15 @@
 
 > get("address/number : 20",  "address/street : 'Yamaha Street'");
 
-又例如，以下的**图结构模型**将实体作为顶点，将实体之间的联系作为边，从而把数据组织成图的形态。
+又例如，以下图1.1的**图结构模型**将实体作为顶点，将实体之间的联系作为边，从而把数据组织成图的形态。
 
 <center>
-	<img src="fig/ch1.4-graphmodel.JPG" width="65%" alt="Hierarchical Model" />
+	<img src="fig/ch1.4-graphmodel.JPG" width="65%" alt="Graph Model" />
 	<br>
 	<div display: inline-block; padding : 2px>
+        图 1.1 图结构模型
 	</div>
 </center>
-
 
 对于图结构模型，可以通过图搜索的方式实现数据访问。这里不再进一步展开讨论。
 
@@ -202,14 +202,12 @@
 | ...  | ...       | ...    | ...     | ...  |
 
 <center>
-	<img src="fig/ch1.4-graphschema.JPG" width="35%" alt="Hierarchical Model" />
+	<img src="fig/ch1.4-graphschema.JPG" width="35%" alt="Schema" />
 	<br>
 	<div display: inline-block; padding : 2px>
+         图 1.2 基于图结构模型的数据模式
 	</div>
 </center>
-
 如上所述，对同一类信息，我们可以使用不同的数据模式进行表示。这导致数据模式的设计成为了一项工程开发的重要环节。这个环节通常被称为**数据库设计**（Database Design）。数据模式的结构决定了计算机程序应该如何处理数据。如果设计的不好，可能导致应用程序性能低下或者难以维护。这个问题将在数据库设计的章节中得到专门讨论。
-
-
 
 [**上一页<<**](chapter1.3.md) | [**>>下一页**](chapter1.5.md)

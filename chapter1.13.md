@@ -18,7 +18,7 @@ $$
 
 在使用文档数据库系统时，我们首先需要指定一个数据库作为访问对象。在MongoDB中，我们使用下面的指令：
 
-```sql
+```bson
 use myDB
 ```
 
@@ -26,7 +26,7 @@ use myDB
 
 当新建一个数据库时，数据库里面没有任何的文档集和文档。因此，需要在该数据库中创建文档集并插入文档。MongoDB一般不用显示地创建文档集，而是在插入文档的同时隐式地创建文档集，具体指令如下：
 
-```sql
+```bson
 db.myNewCollection.insertOne( { x: 1 } )
 ```
 
@@ -34,7 +34,7 @@ db.myNewCollection.insertOne( { x: 1 } )
 
 此外，MongoDB也允许用户使用createCollection指令来显示地创建文档集，指令的使用如下:
 
-```sql
+```bson
 db.createCollection("myBook", {max : 5000} )
 ```
 
@@ -44,8 +44,8 @@ db.createCollection("myBook", {max : 5000} )
 
 文档数据库系统允许用户创建任意形式的文档，并将它放置在任意一个文档集中。在MongoDB中，用户可以使用insertOne指令来创建一个新文档，并将该文档插入某个文档集中，比如：
 
-```sql
-[例D1.8] 在文档集student中创建一个文档
+```bson
+[例1.53] 在文档集student中创建一个文档
 db.student.insertOne( {
   "sno": "2022001",
   "sname": "沐辰",
@@ -59,8 +59,8 @@ db.student.insertOne( {
 
 此外，MongoDB也支持使用insertMany指令向一个文档集中一次性插入多个文档，比如：
 
-```sql
-[例D1.9] 在文档集中一次性创建多个文档
+```bson
+[例1.54] 在文档集中一次性创建多个文档
 db.student.insertMany( [
   {"sno": "2022001","sname": "沐辰","gender": "male","birthdate": "Jan 20, 2003","department": "计算机"},
   {"sno": "2022123","sname": "浩宇","gender": "male","birthdate": "July 3, 2004"},
@@ -74,7 +74,7 @@ db.student.insertMany( [
 
 文档数据库支持文档读取操作。假设我们使用下面的命令创建了文档集student，并且往里面插入了关于"沐辰"和“若汐”的两个文档：
 
-```sql
+```bson
 db.student.insertMany([
 {
   "sno": "2022001",
@@ -105,8 +105,8 @@ db.student.insertMany([
 
 MongoDB提供find指令来实现文档查询，比如：
 
-```sql
-[例D1.10] 文档查询
+```bson
+[例1.55] 文档查询
 db.student.find( {
   "gender": "female",
   "department": "数学"
@@ -119,8 +119,8 @@ db.student.find( {
 
 MongoDB支持通过关键字**in**来实现属性的多个值匹配。以下指令表示在student文档集中查询department属性为“计算机”或“数学”的文档：
 
-```SQL
-[例D1.11] 多值匹配的文档查询
+```bson
+[例1.56] 多值匹配的文档查询
 db.student.find( 
   { "department": { $in: [ "计算机", "数学" ] } } 
 )
@@ -128,8 +128,8 @@ db.student.find(
 
 同样地，多值匹配也可以使用逻辑符号**or**来实现：
 
-```sql
-QL[例D1.12] 多值匹配的文档查询
+```bson
+[例1.57] 多值匹配的文档查询
 db.student.find( 
  { $or: [ { "department": "计算机" }, { "department": "数学" } ] } 
 )
@@ -137,8 +137,8 @@ db.student.find(
 
 此外，MongoDB支持使用关键字**lt,lte,gt,gte**来实现范围匹配，其中lt表示小于，lte表示小于等于，gt表示大于，gte表示大于等于。以下指令表示查询在属性birthdate的子属性year上取值大于2000并且小于2005的文档：
 
-```sql
-[例D1.13] 范围匹配的文档查询
+```bson
+[例1.58] 范围匹配的文档查询
 db.student.find( 
   { "birthdate.year": { $gt: 2000, $lt: 2005} } 
 )
@@ -146,8 +146,8 @@ db.student.find(
 
 通常，在不做特殊要求的前提下，find指令将找到所有满足条件的文档，并返回这些文档的所有属性。比如，下面的例子中返回了查询结果“若汐”文档的所有属性和属性值（包括"\_id"属性）。
 
-```sql
-[例D1.14] 查询文档的所有属性
+```bson
+[例1.59] 查询文档的所有属性
 db.student.find( 
   { "gender": "female", "department": "数学"} 
 )
@@ -169,8 +169,8 @@ db.student.find(
 
 但是，很多时候，我们并不需要一个文档的所有属性。find指令允许指定需要返回的属性。例如：
 
-```sql
-[例D1.15] 查询文档的指定属性
+```bson
+[例1.60] 查询文档的指定属性
 db.person.find( 
   { "gender": "female", "department": "数学" }, 
   { "sname": 1, "department": 1 } 
@@ -193,8 +193,8 @@ MongoDB使用update指令实现对文档的更新。其中，updateOne用于更�
 
 update指令包含三个参数，第一个参数指定查询条件，即表示将对什么文档进行更新；第二个参数指定具体的更新操作，即更新文档的哪些属性；第三个参数为可选参数。
 
-```sql
-[例D1.16]更新单个文档
+```bson
+[例1.61]更新单个文档
 db.student.updateOne(
    { "sname": "沐辰" },
    {  $set: {"department": "电气" } }
@@ -203,8 +203,8 @@ db.student.updateOne(
 
 updateOne指令首先找到属性sname取值为“沐辰”的文档，然后将该文档的department属性改为“电气”。updateOne指令只更新找到的第一个文档，也就是说，如果文档集student中存在两个名叫“沐辰”的人，那么只有第一个被找到的“沐辰”文档会被修改。
 
-```sql
-[例D1.17]更新多个文档
+```bson
+[例1.62]更新多个文档
 db.student.updateMany(
    { "birthdate.year": {$lt: 2000} },
    {  $set: { "group": "adult" } }
@@ -217,23 +217,23 @@ updateMany指令首先找到在属性birthdate的子属性year上取值小于200
 
 MongoDB使用delete指令实现从一个文档集中删除文档。具体指令分为deleteOne和deleteMany。
 
-```sql
-[例D1.18] 删除所有文档
+```bson
+[例1.63] 删除所有文档
 db.student.deleteMany({})
 ```
 
 deleteMany指令允许同时删除满足查询条件的所有文档。上例中，deleteMany指令中没有指定查询条件，即没有指定删除对象的条件，它表示将文档集student中的所有文档全部删除。
 
-```sql
-[例D1.19] 删除满足指定条件的所有文档
+```bson
+[例1.64] 删除满足指定条件的所有文档
 db.student.deleteMany( { "name": "沐辰" } )
 ```
 
 上例中，deleteMany指令首先找到属性name取值为"沐辰"的所有文档，然后将查询到的所有文档从文档集student中删除。
 
 
-```sql
-[例D1.20] 删除一个文档
+```bson
+[例1.65] 删除一个文档
 db.student.deleteOne( { "_id": ObjectId("4b2b9f67a1f631733d917a7a") } )
 ```
 
@@ -242,7 +242,5 @@ deleteOne指令只允许删除满足查询条件的第一个文档。上例中�
 
 以上简单地介绍了文档数据库MongoDB的CRUD操作。在使用不同的文档数据库系统时，读者需要查阅对应系统的相关文档，从而才能准确掌握CRUD指令的具体使用方法。
 
-
-
-[**上一页<<**](chapter1.3.md) | [**>>下一页**](chapterD2.1.md)
+[**上一页<<**](chapter1.12-D.md) | [**>>下一页**](chapter2.1.md)
 
