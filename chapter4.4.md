@@ -298,4 +298,4 @@ bool tickeBooking(objectID movie, objectID user)		/*为用户user提供电影场
 
 可见，虽然事务功能是方便易用的，但应用开发人员也不能盲目地将整个业务流程全部塞进事务中。在使用事务时，需要全方位考虑性能隐患。而最核心的原则就是让事务执行过程尽可能短小精干。
 
-[**上一页<<**](chapter1.3.md) | [**>>下一页**](chapter5.1.md)
+[**上一页<<**](chapter4.3.md) | [**>>下一页**](chapter4.5-R.md)

@@ -1,5 +1,5 @@
 # 文档数据库查询处理
-文档数据库系统除了提供简单的数据存取功能，还能提供一定的计算能力， 支持复杂的聚合操作。本节以MongoDB为例，介绍文档数据库的聚合查询及处理方法。
+本节将以MongoDB为例，介绍文档数据库的计算方法。文档数据库系统除了提供简单的数据存取功能，还能提供一定的计算能力， 支持复杂的聚合操作。
 
 ## 聚合查询的计算
 
@@ -13,7 +13,7 @@ MongoDB使用聚合管道（Aggregation Pipeline）的方式来处理文档的�
 
 在MongoDB中，我们使用如下命令来构建和使用聚合管道：
 
-```SQL
+```sql
 db.mycollection.aggregate( [ 
 							  {stage},  /*处理阶段*/
 							  {stage},  /*处理阶段*/
@@ -51,7 +51,7 @@ db.mycollection.aggregate( [
 ```
 
 ```SQL
-[例D3.1] 查询每个系中女生的人数并按降序排序
+[例3.6] 查询每个系中女生的人数并按降序排序
 db.student.aggregate( [ 
 						{
 						    $match:{"gender":"female"}
@@ -68,7 +68,7 @@ db.student.aggregate( [
 					] )
 ```
 
-例D3.1的聚合查询包含\$match、\$group和\$sort三个阶段，首先\$match阶段从student文档集中筛选出gender属性为"female"的学生文档，然后\$group阶段对筛选结果按department属性进行分组，并统计每个分组的个数，最后\$sort阶段按照每个分组统计的个数降序排序。聚合查询的结果如下：
+例3.6的聚合查询包含\$match、\$group和\$sort三个阶段，首先\$match阶段从student文档集中筛选出gender属性为"female"的学生文档，然后\$group阶段对筛选结果按department属性进行分组，并统计每个分组的个数，最后\$sort阶段按照每个分组统计的个数降序排序。聚合查询的结果如下：
 
 ```SQL
 {"_id": "计算机","totalnum":2},
@@ -79,7 +79,7 @@ db.student.aggregate( [
 注意：\$group阶段中的“\_id”字段是必填，用于指定分组属性，如果“\_id”值为null则表示对输入文档不进行分组，整个输入文档为一个组。\$group阶段中的其他字段则是对分组之后的结果进行聚合操作，比如求每个分组的平均值“\$avg”，返回每个分组的数值总和“$sum”，返回每个分组的最大值\$max等。\$sort阶段是对指定的字段进行排序，-1表示升序排序，1表示降序排序。
 
 ```SQL
-[例D3.2] 查询前3个学生的选课课程的情况
+[例3.7] 查询前3个学生的选课课程的情况
 db.student.aggregate( [ 
 						{
 						    $lookup:{
@@ -102,7 +102,7 @@ db.student.aggregate( [
 					] )
 ```
 
-例D3.2的聚合查询包含\$lookup、\$project和\$limit三个阶段，首先\$lookup阶段使用student文档集的sno属性与sc文档集的sno属性进行左外连接将两个文档集的文档连接在一起，然后\$project阶段指定显示连接结果中的学生学号、学生姓名以及学生选课课程三个属性，最后\$limit阶段返回查询结果的前3个。聚合查询的结果如下：
+例3.7的聚合查询包含\$lookup、\$project和\$limit三个阶段，首先\$lookup阶段使用student文档集的sno属性与sc文档集的sno属性进行左外连接将两个文档集的文档连接在一起，然后\$project阶段指定显示连接结果中的学生学号、学生姓名以及学生选课课程三个属性，最后\$limit阶段返回查询结果的前3个。聚合查询的结果如下：
 
 ```SQL
 {
@@ -135,7 +135,7 @@ db.student.aggregate( [
 
 以上简单地介绍了MongoDB文档数据库的聚合查询及其计算方式聚合管道。更加详细的内容，读者需要阅读对应系统的相关文档。
 
-[**上一页<<**](chapterD1.2.md) | [**>>下一页**](chapterD4.1.md)
+[**上一页<<**](chapter3.4.md) | [**>>下一页**](chapter4.1.md)
 
 
 
