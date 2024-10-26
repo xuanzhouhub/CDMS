@@ -45,142 +45,145 @@ db.createCollection("myBook", {max : 5000} )
 文档数据库系统允许用户创建任意形式的文档，并将它放置在任意一个文档集中。在MongoDB中，用户可以使用insertOne指令来创建一个新文档，并将该文档插入某个文档集中，比如：
 
 ```bson
-[例D1.8] 在文档集中创建一个文档
-db.person.insertOne( {
-  "name": "Jason Chang",
-  "birthdate": "Jan 20, 2001",
+[例1.53] 在文档集student中创建一个文档
+db.student.insertOne( {
+  "sno": "2022001",
+  "sname": "沐辰",
   "gender": "male",
-  "address": "20 Yamaha Street",
-  "city": "Beijing"
+  "birthdate": "Jan 20, 2003",
+  "department": "计算机"
 } )
 ```
 
-上例表示创建一个关于Jason Chang的文档，并将它插入到person文档集中。上一节讲到，每一个文档有一个"\_id"属性，作为文档的唯一标识。如果在插入文档时用户没有显示地设置"\_id"属性值，那么MongoDB会自动生成一个全局唯一的值并赋给该文档的"\_id"属性。
+上例表示创建一个关于"沐辰"的文档，并将它插入到student文档集中。上一节讲到，每一个文档有一个"\_id"属性，作为文档的唯一标识。如果在插入文档时用户没有显示地设置"\_id"属性值，那么MongoDB会自动生成一个全局唯一的值并赋给该文档的"\_id"属性。
 
 此外，MongoDB也支持使用insertMany指令向一个文档集中一次性插入多个文档，比如：
 
 ```bson
-[例D1.9] 在文档集中一次性创建多个文档
-db.book.insertMany( [
-  {"title":"An Apple Tree", "author":"Steven Tang"},
-  {"title":"Home", "author":"Jing Ba","year":"Sep 1,1997"},
-  {"title":"Step by Step", "author":"Newton Wei"}
+[例1.54] 在文档集中一次性创建多个文档
+db.student.insertMany( [
+  {"sno": "2022001","sname": "沐辰","gender": "male","birthdate": "Jan 20, 2003","department": "计算机"},
+  {"sno": "2022123","sname": "浩宇","gender": "male","birthdate": "July 3, 2004"},
+  {"sno": "2022191","name": "若汐","gender": "female","birthdate": "Dec 4, 2004"}
 ] )
 ```
 
-上例表示向文档集book插入三个关于书的文档。与传统的关系型数据库不同，文档数据库允许同时插入不同结构的多个文档。
+上例表示向文档集student插入三个学生的文档。与传统的关系型数据库不同，文档数据库允许同时插入不同结构的多个文档。
 
 ## 文档的查询
 
-文档数据库支持文档读取操作。假设我们使用下面的命令创建了文档集person，并且往里面插入了关于Jason Chang和Jessis Li的两个文档：
+文档数据库支持文档读取操作。假设我们使用下面的命令创建了文档集student，并且往里面插入了关于"沐辰"和“若汐”的两个文档：
 
 ```bson
-db.person.insertMany([
-  {
-    "name": "Jason Chang",
-    "birthdate": {
-      "day":20,
-      "month":"Jan",
-      "year":2001
-    },
-    "gender": "male",
-    "address": "20 Yamaha Street",
-    "city": "Beijing"
+db.student.insertMany([
+{
+  "sno": "2022001",
+  "sname": "沐辰",
+  "gender": "male",
+  "birthdate": {
+    "day":20,
+    "month":"Jan",
+    "year":2003
   },
-  {
-    "name": "Jessie Li",
-    "birthdate": {
-      "day":4,
-      "month":"Dec",
-      "year":1992
-    },
-    "gender": "female",
-    "address": "200 Sichuan Street",
-    "city": "Shanghai"
-  }
+  "group":"children",
+  "department": "计算机"
+},
+{
+  "sno": "2022191",
+  "sname": "若汐",
+  "gender": "female",
+   "birthdate": {
+    "day":4,
+    "month":"Dec",
+    "year":2004
+  },
+  "group":"children",
+  "department": "数学"
+}
 ])
 ```
 
 MongoDB提供find指令来实现文档查询，比如：
 
 ```bson
-[例D1.10] 文档查询
-db.person.find( {
+[例1.55] 文档查询
+db.student.find( {
   "gender": "female",
-  "city": "Shanghai"
+  "department": "数学"
 } )
 ```
 
-上例表示在文档集person中查找gender属性为"female"并且city属性为"Shanghai"的文档，实质上就是在文档集person中查询和{"gender":"female", "city": "Shanghai"}相匹配的文档。基于文档匹配运算方式，我们可以这样理解：指令x.find(y)的目的是在x中找到y的所有匹配。上述指令的查询结果为关于Jessie Li的文档。
+上例表示在文档集student中查找gender属性为"female"并且department属性为"数学"的文档，实质上就是在文档集student中查询和{"gender":"female", "department": "数学"}相匹配的文档。基于文档匹配运算方式，我们可以这样理解：指令x.find(y)的目的是在x中找到y的所有匹配。上述指令的查询结果为关于Jessie Li的文档。
 
 文档匹配是一种基本运算。MongoDB在其上增加了很多灵活性，便于用户表达更广泛的需求。除了上面提到的文档属性的单个值匹配之外，MongoDB还支持属性的多个值匹配、范围匹配等。
 
-MongoDB支持通过关键字**in**来实现属性的多个值匹配。以下指令表示在person文档集中查询city属性为“Shanghai”或“Beijing”的文档：
+MongoDB支持通过关键字**in**来实现属性的多个值匹配。以下指令表示在student文档集中查询department属性为“计算机”或“数学”的文档：
 
 ```bson
-[例D1.11] 多值匹配的文档查询
-db.person.find( 
-  { "city": { $in: [ "Shanghai", "Beijing" ] } } 
+[例1.56] 多值匹配的文档查询
+db.student.find( 
+  { "department": { $in: [ "计算机", "数学" ] } } 
 )
 ```
 
 同样地，多值匹配也可以使用逻辑符号**or**来实现：
 
 ```bson
-[例D1.12] 多值匹配的文档查询
-db.person.find( 
- { $or: [ { "city": "Shanghai" }, { "city": "Beijing" } ] } 
+[例1.57] 多值匹配的文档查询
+db.student.find( 
+ { $or: [ { "department": "计算机" }, { "department": "数学" } ] } 
 )
 ```
 
-此外，MongoDB支持使用关键字**lt,lte,gt,gte**来实现范围匹配，其中lt表示小于，lte表示小于等于，gt表示大于，gte表示大于等于。以下指令表示查询在属性birthdate的子属性year上取值大于2000并且小于2002的文档：
+此外，MongoDB支持使用关键字**lt,lte,gt,gte**来实现范围匹配，其中lt表示小于，lte表示小于等于，gt表示大于，gte表示大于等于。以下指令表示查询在属性birthdate的子属性year上取值大于2000并且小于2005的文档：
 
 ```bson
-[例D1.13] 范围匹配的文档查询
-db.person.find( 
-  { "birthdate.year": { $gt: 2000, $lt: 2002} } 
+[例1.58] 范围匹配的文档查询
+db.student.find( 
+  { "birthdate.year": { $gt: 2000, $lt: 2005} } 
 )
 ```
 
-通常，在不做特殊要求的前提下，find指令将找到所有满足条件的文档，并返回这些文档的所有属性。比如，下面的例子中返回了查询结果Jessie Li文档的所有属性和属性值（包括"\_id"属性）。
+通常，在不做特殊要求的前提下，find指令将找到所有满足条件的文档，并返回这些文档的所有属性。比如，下面的例子中返回了查询结果“若汐”文档的所有属性和属性值（包括"\_id"属性）。
 
 ```bson
-[例D1.14] 查询文档的所有属性
-db.person.find( 
-  { "gender": "female", "city": "Shanghai" } 
+[例1.59] 查询文档的所有属性
+db.student.find( 
+  { "gender": "female", "department": "数学"} 
 )
 结果为：
 {
   "_id": ObjectId("4b2b9f67a1f631733d917a7a"),
-  "name": "Jessie Li",
-  "birthdate": {
+  "sno": "2022191",
+  "sname": "若汐",
+  "gender": "female",
+   "birthdate": {
     "day":4,
     "month":"Dec",
-    "year":1992
+    "year":2004
   },
-  "gender": "female",
-  "address": "200 Sichuan Street",
-  "city": "Shanghai"
+  "group":"children",
+  "department": "数学"
 }
 ```
 
 但是，很多时候，我们并不需要一个文档的所有属性。find指令允许指定需要返回的属性。例如：
 
 ```bson
-[例D1.15] 查询文档的指定属性
+[例1.60] 查询文档的指定属性
 db.person.find( 
-  { "gender": "female", "city": "Shanghai" }, 
-  { "name": 1, "city": 1 } 
+  { "gender": "female", "department": "数学" }, 
+  { "sname": 1, "department": 1 } 
 )
 结果为：
 {
   "_id": ObjectId("4b2b9f67a1f631733d917a7a"),
-  "name": "Jessie Li",
-  "city": "Shanghai"
+  "sname": "若汐",
+  "department": "数学"
 }
 ```
 
-这里，find指令包含两个参数，第一个参数指定查询条件，第二个参数指定需返回的属性。上例只要求返回查询结果文档中的name和city两个属性。因此，所得到的查询结果就被大大简化了。值得注意的是，"\_id"属性是文档的标识属性，即使不被指定，它也会返回。
+这里，find指令包含两个参数，第一个参数指定查询条件，第二个参数指定需返回的属性。上例只要求返回查询结果文档中的name和department两个属性。因此，所得到的查询结果就被大大简化了。值得注意的是，"\_id"属性是文档的标识属性，即使不被指定，它也会返回。
 
 MongoDB的查询指令还有很多使用细节，这里将不再赘述。在实际使用时，读者可以查阅MongoDB的[使用手册](https://docs.mongodb.com/manual/)。
 
@@ -191,18 +194,18 @@ MongoDB使用update指令实现对文档的更新。其中，updateOne用于更�
 update指令包含三个参数，第一个参数指定查询条件，即表示将对什么文档进行更新；第二个参数指定具体的更新操作，即更新文档的哪些属性；第三个参数为可选参数。
 
 ```bson
-[例D1.16]更新单个文档
-db.person.updateOne(
-   { "name": "Jason Chang" },
-   {  $set: { "address": "889 Alibaba Street", "city": "Hangzhou" } }
+[例1.61]更新单个文档
+db.student.updateOne(
+   { "sname": "沐辰" },
+   {  $set: {"department": "电气" } }
 )
 ```
 
-updateOne指令首先找到属性name取值为“Jason Chang”的文档，然后将该文档的city属性改为“Hangzhou”，address属性改为“889 Alibaba Street”。updateOne指令只更新找到的第一个文档，也就是说，如果文档集person中存在两个名叫Jason Chang的人，那么只有第一个被找到的Jason Chang文档会被修改。
+updateOne指令首先找到属性sname取值为“沐辰”的文档，然后将该文档的department属性改为“电气”。updateOne指令只更新找到的第一个文档，也就是说，如果文档集student中存在两个名叫“沐辰”的人，那么只有第一个被找到的“沐辰”文档会被修改。
 
 ```bson
-[例D1.17]更新多个文档
-db.person.updateMany(
+[例1.62]更新多个文档
+db.student.updateMany(
    { "birthdate.year": {$lt: 2000} },
    {  $set: { "group": "adult" } }
 )
@@ -215,23 +218,23 @@ updateMany指令首先找到在属性birthdate的子属性year上取值小于200
 MongoDB使用delete指令实现从一个文档集中删除文档。具体指令分为deleteOne和deleteMany。
 
 ```bson
-[例D1.18] 删除所有文档
-db.person.deleteMany({})
+[例1.63] 删除所有文档
+db.student.deleteMany({})
 ```
 
-deleteMany指令允许同时删除满足查询条件的所有文档。上例中，deleteMany指令中没有指定查询条件，即没有指定删除对象的条件，它表示将文档集person中的所有文档全部删除。
+deleteMany指令允许同时删除满足查询条件的所有文档。上例中，deleteMany指令中没有指定查询条件，即没有指定删除对象的条件，它表示将文档集student中的所有文档全部删除。
 
 ```bson
-[例D1.19] 删除满足指定条件的所有文档
-db.person.deleteMany( { "name": "Jason Chang" } )
+[例1.64] 删除满足指定条件的所有文档
+db.student.deleteMany( { "name": "沐辰" } )
 ```
 
-上例中，deleteMany指令首先找到属性name取值为"Jason Chang"的所有文档，然后将查询到的所有文档从文档集person中删除。
+上例中，deleteMany指令首先找到属性name取值为"沐辰"的所有文档，然后将查询到的所有文档从文档集student中删除。
 
 
 ```bson
-[例D1.20] 删除一个文档
-db.person.deleteOne( { "_id": ObjectId("4b2b9f67a1f631733d917a7a") } )
+[例1.65] 删除一个文档
+db.student.deleteOne( { "_id": ObjectId("4b2b9f67a1f631733d917a7a") } )
 ```
 
 deleteOne指令只允许删除满足查询条件的第一个文档。上例中的指令表示删除某一特定"\_id"的文档。
@@ -239,7 +242,5 @@ deleteOne指令只允许删除满足查询条件的第一个文档。上例中�
 
 以上简单地介绍了文档数据库MongoDB的CRUD操作。在使用不同的文档数据库系统时，读者需要查阅对应系统的相关文档，从而才能准确掌握CRUD指令的具体使用方法。
 
-
-
-[**上一页<<**](chapter2.2.md) | [**>>下一页**](chapter2.4.md)
+[**上一页<<**](chapter1.12-D.md) | [**>>下一页**](chapter2.1.md)
 
