@@ -39,7 +39,7 @@ db.student.find( {
 文档数据库系统对外提供了指令允许用户创建辅助索引。文档数据库系统MongoDB的索引创建指令为createIndex，该指令包含两个参数，第一个参数指定要创建的属性字段和索引键值的排序类型，第二个参数为可选参数。
 
 ```bson
-[例2.6] 索引创建
+[例2.5] 索引创建
 db.student.createIndex({"sno":1})  // 单键索引
 db.student.createIndex({"sname":1, "age":-1})  //复合索引
 ```
@@ -47,7 +47,7 @@ db.student.createIndex({"sname":1, "age":-1})  //复合索引
 createIndex可以在一个属性或者多个属性上创建索引。前者称为单键索引，后者称为复合索引。在例2.6中，第一行表示在student文档集中的文档"sno"属性上创建索引，"sno"属性值（索引键值）按升序排列；第二行表示在文档的"sname"和"age"两个属性上创建索引，"sname"和"age"共同作为索引键值，索引键值首先按"name"升序排列，然后在每个"name"内按"age"降序排列。
 
 ```bson
-[例2.7] 索引使用
+[例2.6] 索引使用
 db.student.find({"sno":"2022001"})
 db.student.find({"sname":"沐辰", "age":"21"})
 ```
