@@ -2,7 +2,7 @@
 
 了解数据模型之后，我们来看看文档数据库提供的基本功能和查询语言。市面上有不少文档数据库系统，如MongoDB、微软的CosmosDB、亚马逊的DocumentDB等。这些系统的基本功能大同小异，但具体的使用接口却不尽相同。由于MongoDB是目前使用最为广泛的文档数据库系统，本节将它作为范例来讲解文档数据库的功能和使用。读者在使用其他文档数据库的时候需查阅相应文档。
 
-数据管理系统最基本的功能是存取数据。文档数据库将数据存取的功能抽象为创建文档（Create）、查询文档（Read）、更新文档（Update）和删除文档（Delete）四类操作，简称为CRUD操作。在介绍这四种类型操作之前，我们先来看看文档数据库的数据组织体系。
+数据管理系统最基本的功能是存取数据。文档数据库将数据存取的功能抽象为创建文档（Create）、查询文档（Read）、更新文档（Update）和删除文档（Delete）四类操作，简称为CRUD操作。除了简单的CRUD操作之外，文档数据库还支持复杂的聚合操作。在介绍基本操作和聚合操作之前，我们先来看看文档数据库的数据组织体系。
 
 ## 文档的组织体系
 
@@ -18,7 +18,7 @@ $$
 
 在使用文档数据库系统时，我们首先需要指定一个数据库作为访问对象。在MongoDB中，我们使用下面的指令：
 
-```bson
+```sql
 use myDB
 ```
 
@@ -26,7 +26,7 @@ use myDB
 
 当新建一个数据库时，数据库里面没有任何的文档集和文档。因此，需要在该数据库中创建文档集并插入文档。MongoDB一般不用显示地创建文档集，而是在插入文档的同时隐式地创建文档集，具体指令如下：
 
-```bson
+```sql
 db.myNewCollection.insertOne( { x: 1 } )
 ```
 
@@ -34,7 +34,7 @@ db.myNewCollection.insertOne( { x: 1 } )
 
 此外，MongoDB也允许用户使用createCollection指令来显示地创建文档集，指令的使用如下:
 
-```bson
+```sql
 db.createCollection("myBook", {max : 5000} )
 ```
 
@@ -44,7 +44,7 @@ db.createCollection("myBook", {max : 5000} )
 
 文档数据库系统允许用户创建任意形式的文档，并将它放置在任意一个文档集中。在MongoDB中，用户可以使用insertOne指令来创建一个新文档，并将该文档插入某个文档集中，比如：
 
-```bson
+```sql
 [例1.53] 在文档集student中创建一个文档
 db.student.insertOne( {
   "sno": "2022001",
@@ -59,7 +59,7 @@ db.student.insertOne( {
 
 此外，MongoDB也支持使用insertMany指令向一个文档集中一次性插入多个文档，比如：
 
-```bson
+```sql
 [例1.54] 在文档集中一次性创建多个文档
 db.student.insertMany( [
   {"sno": "2022001","sname": "沐辰","gender": "male","birthdate": "Jan 20, 2003","department": "计算机"},
@@ -74,7 +74,7 @@ db.student.insertMany( [
 
 文档数据库支持文档读取操作。假设我们使用下面的命令创建了文档集student，并且往里面插入了关于"沐辰"和“若汐”的两个文档：
 
-```bson
+```sql
 db.student.insertMany([
 {
   "sno": "2022001",
@@ -105,7 +105,7 @@ db.student.insertMany([
 
 MongoDB提供find指令来实现文档查询，比如：
 
-```bson
+```sql
 [例1.55] 文档查询
 db.student.find( {
   "gender": "female",
@@ -119,7 +119,7 @@ db.student.find( {
 
 MongoDB支持通过关键字**in**来实现属性的多个值匹配。以下指令表示在student文档集中查询department属性为“计算机”或“数学”的文档：
 
-```bson
+```sql
 [例1.56] 多值匹配的文档查询
 db.student.find( 
   { "department": { $in: [ "计算机", "数学" ] } } 
@@ -128,7 +128,7 @@ db.student.find(
 
 同样地，多值匹配也可以使用逻辑符号**or**来实现：
 
-```bson
+```sql
 [例1.57] 多值匹配的文档查询
 db.student.find( 
  { $or: [ { "department": "计算机" }, { "department": "数学" } ] } 
@@ -137,7 +137,7 @@ db.student.find(
 
 此外，MongoDB支持使用关键字**lt,lte,gt,gte**来实现范围匹配，其中lt表示小于，lte表示小于等于，gt表示大于，gte表示大于等于。以下指令表示查询在属性birthdate的子属性year上取值大于2000并且小于2005的文档：
 
-```bson
+```sql
 [例1.58] 范围匹配的文档查询
 db.student.find( 
   { "birthdate.year": { $gt: 2000, $lt: 2005} } 
@@ -146,7 +146,7 @@ db.student.find(
 
 通常，在不做特殊要求的前提下，find指令将找到所有满足条件的文档，并返回这些文档的所有属性。比如，下面的例子中返回了查询结果“若汐”文档的所有属性和属性值（包括"\_id"属性）。
 
-```bson
+```sql
 [例1.59] 查询文档的所有属性
 db.student.find( 
   { "gender": "female", "department": "数学"} 
@@ -169,7 +169,7 @@ db.student.find(
 
 但是，很多时候，我们并不需要一个文档的所有属性。find指令允许指定需要返回的属性。例如：
 
-```bson
+```sql
 [例1.60] 查询文档的指定属性
 db.person.find( 
   { "gender": "female", "department": "数学" }, 
@@ -193,7 +193,7 @@ MongoDB使用update指令实现对文档的更新。其中，updateOne用于更�
 
 update指令包含三个参数，第一个参数指定查询条件，即表示将对什么文档进行更新；第二个参数指定具体的更新操作，即更新文档的哪些属性；第三个参数为可选参数。
 
-```bson
+```sql
 [例1.61]更新单个文档
 db.student.updateOne(
    { "sname": "沐辰" },
@@ -203,7 +203,7 @@ db.student.updateOne(
 
 updateOne指令首先找到属性sname取值为“沐辰”的文档，然后将该文档的department属性改为“电气”。updateOne指令只更新找到的第一个文档，也就是说，如果文档集student中存在两个名叫“沐辰”的人，那么只有第一个被找到的“沐辰”文档会被修改。
 
-```bson
+```sql
 [例1.62]更新多个文档
 db.student.updateMany(
    { "birthdate.year": {$lt: 2000} },
@@ -217,14 +217,14 @@ updateMany指令首先找到在属性birthdate的子属性year上取值小于200
 
 MongoDB使用delete指令实现从一个文档集中删除文档。具体指令分为deleteOne和deleteMany。
 
-```bson
+```sql
 [例1.63] 删除所有文档
 db.student.deleteMany({})
 ```
 
 deleteMany指令允许同时删除满足查询条件的所有文档。上例中，deleteMany指令中没有指定查询条件，即没有指定删除对象的条件，它表示将文档集student中的所有文档全部删除。
 
-```bson
+```SQL
 [例1.64] 删除满足指定条件的所有文档
 db.student.deleteMany( { "name": "沐辰" } )
 ```
@@ -232,15 +232,66 @@ db.student.deleteMany( { "name": "沐辰" } )
 上例中，deleteMany指令首先找到属性name取值为"沐辰"的所有文档，然后将查询到的所有文档从文档集student中删除。
 
 
-```bson
+```sql
 [例1.65] 删除一个文档
 db.student.deleteOne( { "_id": ObjectId("4b2b9f67a1f631733d917a7a") } )
 ```
 
 deleteOne指令只允许删除满足查询条件的第一个文档。上例中的指令表示删除某一特定"\_id"的文档。
 
-
 以上简单地介绍了文档数据库MongoDB的CRUD操作。在使用不同的文档数据库系统时，读者需要查阅对应系统的相关文档，从而才能准确掌握CRUD指令的具体使用方法。
+
+## 聚合操作
+
+MongoDB使用aggregate指令实现对单个文档集或者多个文档集的关联结果进行分组、过滤、排序、计算统计等多种复杂操作，并将结果以新的形式返回。常用的聚合操作有\$match、\$project、\$group、\$sort、\$limit、\$lookup、\$unwind等。
+
+| MongoDB聚合操作 |                 描述                 |  SQL等价运算符  |
+| --------------- | :----------------------------------: | :-------------: |
+| $match          |   筛选满足条件的文档，类似find指令   |      where      |
+| $project        |    指定返回的字段和对字段进行转换    |     select      |
+| $group          |     将文档按照指定的字段进行分组     |    group by     |
+| $sort           |            对文档进行排序            |    order by     |
+| $limit          |      限制聚合操作返回的文档数量      |      limit      |
+| $lookup         |               左外连接               | left outer join |
+| \$unwind        | 将数组类型的字段展开为多个单独的文档 |                 |
+
+接下来以学生-课程数据库为例介绍文档数据库的聚合操作。学生-课程数据库中包含学生文档集（student）以及学生选课文档集（sc），各文档集中的数据实例如下：
+
+```SQL
+学生文档集(student)中包含如下4个文档，每个文档包含学号、姓名、性别、年龄、系五个属性
+{"sno": "2022001","sname": "沐辰","gender": "male","age": 19,"department": "计算机"}
+{"sno": "2022123","sname": "浩宇","gender": "male","age": 18 ,"department": "计算机"}
+{"sno": "2022191","sname": "若汐","gender": "female","age": 18 ,"department": "数学"}
+{"sno": "2022267","sname": "依诺","gender": "female","age": 19 ,"department": "金融"}
+
+学生选课文档集(sc)中包含如下4个文档，每个文档包含学号、课程号、课程名、成绩四个属性
+{"sno": "2022001","cno": "1","cname": "高数","grade": 92}
+{"sno": "2022001","cno": "3","cname": "数据库","grade": 85}
+{"sno": "2022191","cno": "2","cname": "C语言","grade": 88}
+{"sno": "2022191","cno": "3","cname": "数据库","grade": 90}
+```
+
+```SQL
+[例1.66] 查询每个系中女生的人数并按降序排序
+db.student.aggregate( [ 
+						{
+						    $match:{"gender":"female"}
+						},  /*$match阶段*/
+						{
+						    $group:{
+						        "_id":"department",   /*按department属性进行分组*/
+						        "totalnum":{"$count":{}} /*统计每个分组中的文档数量*/
+						     }
+						},  /*$group阶段*/
+    					{
+    						$sort:{"totalnum":-1}  /*按totalnum的降序排序*/
+    					}   /*sort阶段*/
+					] )
+```
+
+
+
+
 
 [**上一页<<**](chapter1.12-D.md) | [**>>下一页**](chapter2.1.md)
 
