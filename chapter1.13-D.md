@@ -264,11 +264,11 @@ MongoDB使用aggregate指令实现对单个文档集或者多个文档集的关�
 {"sno": "2022191","sname": "若汐","gender": "female","age": 18 ,"department": "数学"}
 {"sno": "2022267","sname": "依诺","gender": "female","age": 19 ,"department": "金融"}
 
-学生选课文档集(sc)中包含如下4个文档，每个文档包含学号、课程号、课程名、成绩四个属性
-{"sno": "2022001","cno": "1","cname": "高数","grade": 92}
-{"sno": "2022001","cno": "3","cname": "数据库","grade": 85}
-{"sno": "2022191","cno": "2","cname": "C语言","grade": 88}
-{"sno": "2022191","cno": "3","cname": "数据库","grade": 90}
+学生选课文档集(sc)中包含如下4个文档，每个文档包含学号、成绩三个属性
+{"sno": "2022001","cno": "1","grade": 92}
+{"sno": "2022001","cno": "3","grade": 85}
+{"sno": "2022191","cno": "2","grade": 88}
+{"sno": "2022191","cno": "3","grade": 90}
 ```
 
 ```SQL
@@ -276,22 +276,85 @@ MongoDB使用aggregate指令实现对单个文档集或者多个文档集的关�
 db.student.aggregate( [ 
 						{
 						    $match:{"gender":"female"}
-						},  /*$match阶段*/
+						},  /*$match操作*/
 						{
 						    $group:{
 						        "_id":"department",   /*按department属性进行分组*/
 						        "totalnum":{"$count":{}} /*统计每个分组中的文档数量*/
 						     }
-						},  /*$group阶段*/
+						},  /*$group操作*/
     					{
     						$sort:{"totalnum":-1}  /*按totalnum的降序排序*/
-    					}   /*sort阶段*/
+    					}   /*sort操作*/
 					] )
 ```
 
+例1.66是在单个文档集上依次进行\$match（筛选）、\$group（分组）和\$sort（排序）三个聚合操作。首先\$match操作从student文档集中筛选出gender属性为"female"的学生文档，然后\$group操作对筛选结果按department属性进行分组，并统计每个分组的个数，最后\$sort操作按照每个分组统计的个数降序排序。聚合查询的结果如下：
+
+```SQL
+{"_id": "计算机","totalnum":2},
+{"_id": "数学","totalnum":1},
+{"_id": "金融","totalnum":1}
+```
+
+注意：\$group操作中的“\_id”字段是必填，用于指定分组属性，如果“\_id”值为null则表示对输入文档不进行分组，整个输入文档为一个组。\$group操作中的其他字段则是对分组之后的结果进行计算，比如求每个分组的平均值“\$avg”，返回每个分组的数值总和“$sum”，返回每个分组的最大值\$max等。\$sort操作是对指定的字段进行排序，-1表示升序排序，1表示降序排序。
+
+```SQL
+[例1.67] 查询前3个学生的选课课程的情况，并输出学生学号、学生姓名、所选课程号以及成绩
+db.student.aggregate( [ 
+						{
+						    $lookup:{
+    							"from":"sc", /*student文档集与sc文档集进行左外连接*/
+    							"localFiled":"sno", /*指定student中的sno属性与sc进行等值连接*/
+    							"foreignField":"sno", /*指定sc中的sno属性与student进行等值连接*/
+    							"as"："selectedCourses"  /*指定连接结果的属性名称,输出的结果是数组*/
+   							 }
+						},  /*$lookup操作*/
+    					{
+    						$unwind:"$selectedCourses"  /*将selectedCourse属性展开成多个单独的文档*/
+    					}, /*$unwind操作*/
+						{
+						    $project:{
+    							"sno":1,
+						        "sname":1,  
+						        "cno":"$selectedCourses.cno",
+    							"grade":"$selectedCourses.grade"
+						     }
+						},  /*$project操作*/
+    					{
+    						$limit:3   /*返回查询结果的前3个文档*/
+    					}   /*$limit操作*/
+					] )
+```
+
+例1.67是对学生文档集和选课文档集关联之后再进行一系列的聚合操作，首先\$lookup操作将student文档集和sc文档集进行关联（左连接），以学号（sno）作为关联字段，把每个学生对应的选课信息合并到学生文档中，并将选课信息存放在名为selectedCourses的新字段里，selectedCourses字段是一个文档数组，然后\$unwind操作将selectedCourses数组展开，使得每一条学生选课结果成为一个独立的文档，之后\$project操作指定返回连接结果中的学生学号、学生姓名、所选课程号及成绩，其中所选课程号及成绩来自于开展后的selectedCourses字段，最后\$limit操作限制最终返回的结果数为3，即前3个学生选课文档。聚合查询的结果如下：
+
+```SQL
+{
+	"sno": "2022001",
+	"sname": "沐辰",
+	"cno": "1",
+	"grade": 92
+}，
+{
+	"sno": "2022001",
+	"sname": "沐辰",
+	"cno": "3",
+	"grade": 85
+}，
+{
+	"sno": "2022123",
+	"sname": "浩宇",
+	"cno": null,
+	"grade": null
+}
+
+```
 
 
+通常，为了进一步提高聚合操作的效率，构建聚合查询时会将\$match筛选操作放在查询的前面位置，这既可以快速过滤不需要的文档，减少后续聚合操作的数据量，还可以在查询时使用索引来提高性能。
 
+以上简单地介绍了MongoDB文档数据库的增删改查操作以及聚合操作。更加详细的内容，读者需要阅读对应系统的相关文档。
 
 [**上一页<<**](chapter1.12-D.md) | [**>>下一页**](chapter2.1.md)
 
