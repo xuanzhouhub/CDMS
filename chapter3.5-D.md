@@ -73,8 +73,7 @@ db.student.aggregate( [
 		图 3.12 文档数据库aggregate聚合查询的查询处理
 	</div>
 </enter>
-
-[**上一页<<**](chapter3.4.md) | [**>>下一页**](chapter4.1.md)
+[**上一页<<**](chapter3.4-R.md) | [**>>下一页**](chapter3.6-G.md)
 
 
 
