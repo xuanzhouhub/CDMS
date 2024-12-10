@@ -115,7 +115,7 @@
   "gender": "male",
   "birthdate": "Jan 20, 2003",
   "department": "计算机",
-  "SC": [
+  "courses": [
     {
       "cno"："1",
       "cname": "高数",

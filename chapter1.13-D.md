@@ -42,7 +42,9 @@ db.createCollection("myBook", {max : 5000} )
 
 ## 文档的创建
 
-文档数据库系统允许用户创建任意形式的文档，并将它放置在任意一个文档集中。在MongoDB中，用户可以使用insertOne指令来创建一个新文档，并将该文档插入某个文档集中，比如：
+本小节以学生-课程数据库为例来介绍文档数据库的CRUD操作。学生-课程文档数据库中包含一个学生文档集Student，学生文档集中记录学生学号、姓名、性别、年龄、系以及学生选课信息，学生选课信息具体包含课程号、课程名、课程学分以及课程成绩，学生的选课信息以文档数组的形式嵌套在学生文档中。
+
+文档数据库系统允许用户创建任意形式的文档，并将它放置在任意一个文档集中。在MongoDB中，用户可以使用insertOne指令来创建一个新文档，并将该文档插入某个文档集中。比如：
 
 ```sql
 [例1.53] 在文档集student中创建一个文档
@@ -50,21 +52,30 @@ db.student.insertOne( {
   "sno": "2022001",
   "sname": "沐辰",
   "gender": "male",
-  "birthdate": "Jan 20, 2003",
-  "department": "计算机"
+  "age": 19,
+  "department": "计算机",
+  "courses": [
+      {"cno":"1","cname":"高数","credit":4,"grade":92},
+      {"cno":"3","cname":"数据库","credit":4,"grade": 85}
+  ]
 } )
 ```
 
-上例表示创建一个关于"沐辰"的文档，并将它插入到student文档集中。上一节讲到，每一个文档有一个"\_id"属性，作为文档的唯一标识。如果在插入文档时用户没有显示地设置"\_id"属性值，那么MongoDB会自动生成一个全局唯一的值并赋给该文档的"\_id"属性。
+上例表示创建一个关于"沐辰"的文档，并将它插入到student文档集中，其中沐辰的选课信息courses是文档数组的形式，。上一节讲到，每一个文档有一个"\_id"属性，作为文档的唯一标识。如果在插入文档时用户没有显示地设置"\_id"属性值，那么MongoDB会自动生成一个全局唯一的值并赋给该文档的"\_id"属性。
 
 此外，MongoDB也支持使用insertMany指令向一个文档集中一次性插入多个文档，比如：
 
 ```sql
 [例1.54] 在文档集中一次性创建多个文档
 db.student.insertMany( [
-  {"sno": "2022001","sname": "沐辰","gender": "male","birthdate": "Jan 20, 2003","department": "计算机"},
-  {"sno": "2022123","sname": "浩宇","gender": "male","birthdate": "July 3, 2004"},
-  {"sno": "2022191","name": "若汐","gender": "female","birthdate": "Dec 4, 2004"}
+  {"sno": "2022001","sname": "沐辰","gender": "male","age": 19,"department": "计算机", 
+    "courses":[
+        {"cno":"1","cname":"高数","credit":4,"grade":92},
+        {"cno":"3","cname":"数据库","credit":4,"grade": 85}
+    ]
+  },
+  {"sno": "2022123","sname": "浩宇","gender": "male","age": 18, "department": "计算机"},
+  {"sno": "2022191","sname": "若汐","gender": "female","age": 18,"department": "数学", "courses":[]}
 ] )
 ```
 
@@ -72,38 +83,7 @@ db.student.insertMany( [
 
 ## 文档的查询
 
-文档数据库支持文档读取操作。假设我们使用下面的命令创建了文档集student，并且往里面插入了关于"沐辰"和“若汐”的两个文档：
-
-```sql
-db.student.insertMany([
-{
-  "sno": "2022001",
-  "sname": "沐辰",
-  "gender": "male",
-  "birthdate": {
-    "day":20,
-    "month":"Jan",
-    "year":2003
-  },
-  "group":"children",
-  "department": "计算机"
-},
-{
-  "sno": "2022191",
-  "sname": "若汐",
-  "gender": "female",
-   "birthdate": {
-    "day":4,
-    "month":"Dec",
-    "year":2004
-  },
-  "group":"children",
-  "department": "数学"
-}
-])
-```
-
-MongoDB提供find指令来实现文档查询，比如：
+文档数据库支持文档读取操作，MongoDB提供find指令来实现文档查询，比如：
 
 ```sql
 [例1.55] 文档查询
@@ -113,7 +93,7 @@ db.student.find( {
 } )
 ```
 
-上例表示在文档集student中查找gender属性为"female"并且department属性为"数学"的文档，实质上就是在文档集student中查询和{"gender":"female", "department": "数学"}相匹配的文档。基于文档匹配运算方式，我们可以这样理解：指令x.find(y)的目的是在x中找到y的所有匹配。上述指令的查询结果为关于Jessie Li的文档。
+上例表示在文档集student中查找gender属性为"female"并且department属性为"数学"的文档，实质上就是在文档集student中查询和{"gender":"female", "department": "数学"}相匹配的文档。基于文档匹配运算方式，我们可以这样理解：指令x.find(y)的目的是在x中找到y的所有匹配。上述指令的查询结果为关于"若汐"的文档。
 
 文档匹配是一种基本运算。MongoDB在其上增加了很多灵活性，便于用户表达更广泛的需求。除了上面提到的文档属性的单个值匹配之外，MongoDB还支持属性的多个值匹配、范围匹配等。
 
@@ -135,16 +115,16 @@ db.student.find(
 )
 ```
 
-此外，MongoDB支持使用关键字**lt,lte,gt,gte**来实现范围匹配，其中lt表示小于，lte表示小于等于，gt表示大于，gte表示大于等于。以下指令表示查询在属性birthdate的子属性year上取值大于2000并且小于2005的文档：
+此外，MongoDB支持使用关键字**lt,lte,gt,gte**来实现范围匹配，其中lt表示小于，lte表示小于等于，gt表示大于，gte表示大于等于。以下指令表示查询在属性age上取值大于18并且小于20的文档：
 
 ```sql
 [例1.58] 范围匹配的文档查询
 db.student.find( 
-  { "birthdate.year": { $gt: 2000, $lt: 2005} } 
+  { "age": { $gt: 18, $lt: 20} } 
 )
 ```
 
-通常，在不做特殊要求的前提下，find指令将找到所有满足条件的文档，并返回这些文档的所有属性。比如，下面的例子中返回了查询结果“若汐”文档的所有属性和属性值（包括"\_id"属性）。
+通常，在不做特殊要求的前提下，find指令将找到所有满足条件的文档，并返回这些文档的所有属性，因此，下面例子的查询结果展示了“若汐”文档的所有属性和属性值（包括"\_id"属性）。
 
 ```sql
 [例1.59] 查询文档的所有属性
@@ -157,13 +137,9 @@ db.student.find(
   "sno": "2022191",
   "sname": "若汐",
   "gender": "female",
-   "birthdate": {
-    "day":4,
-    "month":"Dec",
-    "year":2004
-  },
-  "group":"children",
-  "department": "数学"
+  "age": 18,
+  "department": "数学",
+  "courses":[]
 }
 ```
 
@@ -206,12 +182,12 @@ updateOne指令首先找到属性sname取值为“沐辰”的文档，然后将
 ```sql
 [例1.62]更新多个文档
 db.student.updateMany(
-   { "birthdate.year": {$lt: 2000} },
-   {  $set: { "group": "adult" } }
+   { "age": {$lt: 19} },
+   {  $set: { "courses": [] } }
 )
 ```
 
-updateMany指令首先找到在属性birthdate的子属性year上取值小于2000的文档（lt代表“小于”（less than）），即在2000年之前出生的人，然后将这些人的group属性改为“adult”。updateMany指令允许同时更新多个文档，因此凡是在2000年之前出生的人，无论多少，都会被更新。有时，满足查询条件的文档可能没有group属性。遇到这种情况，MongoDB会自动地为这些文档添加group属性，然后设置group的取值为"adult"。
+updateMany指令首先找到在属性age上取值小于19的文档（lt代表“小于”（less than）），即年龄小于19岁的学生，然后将这些学生的课程属性courses改为空数组。updateMany指令允许同时更新多个文档，因此凡是年龄小于19岁的学生，无论多少，都会被更新。有时，满足查询条件的文档可能没有courses属性。遇到这种情况，MongoDB会自动地为这些文档添加courses属性，然后设置courses为空数组。
 
 ## 文档的删除
 
@@ -243,7 +219,7 @@ deleteOne指令只允许删除满足查询条件的第一个文档。上例中�
 
 ## 聚合操作
 
-MongoDB使用aggregate指令实现对单个文档集或者多个文档集的关联结果进行分组、过滤、排序、计算统计等多种复杂操作，并将结果以新的形式返回。常用的聚合操作有\$match、\$project、\$group、\$sort、\$limit、\$lookup、\$unwind等。
+MongoDB通常使用aggregate指令实现对文档集进行分组、过滤、排序、计算统计等多种复杂操作，并将结果以新的形式返回。常用的聚合操作有\$match、\$project、\$group、\$sort、\$limit、\$unwind等。
 
 | MongoDB聚合操作 |                 描述                 |  SQL等价运算符  |
 | --------------- | :----------------------------------: | :-------------: |
@@ -252,23 +228,26 @@ MongoDB使用aggregate指令实现对单个文档集或者多个文档集的关�
 | $group          |     将文档按照指定的字段进行分组     |    group by     |
 | $sort           |            对文档进行排序            |    order by     |
 | $limit          |      限制聚合操作返回的文档数量      |      limit      |
-| $lookup         |               左外连接               | left outer join |
 | \$unwind        | 将数组类型的字段展开为多个单独的文档 |                 |
 
-接下来以学生-课程数据库为例介绍文档数据库的聚合操作。学生-课程数据库中包含学生文档集（student）以及学生选课文档集（sc），各文档集中的数据实例如下：
+接下来以学生-课程数据库为例介绍文档数据库的聚合操作。学生-课程数据库中包含学生文档集（student），该文档集中的数据实例如下：
 
 ```SQL
-学生文档集(student)中包含如下4个文档，每个文档包含学号、姓名、性别、年龄、系五个属性
-{"sno": "2022001","sname": "沐辰","gender": "male","age": 19,"department": "计算机"}
-{"sno": "2022123","sname": "浩宇","gender": "male","age": 18 ,"department": "计算机"}
-{"sno": "2022191","sname": "若汐","gender": "female","age": 18 ,"department": "数学"}
-{"sno": "2022267","sname": "依诺","gender": "female","age": 19 ,"department": "金融"}
-
-学生选课文档集(sc)中包含如下4个文档，每个文档包含学号、成绩三个属性
-{"sno": "2022001","cno": "1","grade": 92}
-{"sno": "2022001","cno": "3","grade": 85}
-{"sno": "2022191","cno": "2","grade": 88}
-{"sno": "2022191","cno": "3","grade": 90}
+学生文档集(student)中包含如下4个文档，每个文档包含学号、姓名、性别、年龄、系以及学生选课信息五个属性，其中学生选课信息以文档数组的形式
+ {"sno": "2022001","sname": "沐辰","gender": "male","age": 19,"department": "计算机", 
+  "courses":[
+     {"cno":"1","cname":"高数","credit":4,"grade":92},
+     {"cno":"3","cname":"数据库","credit":4,"grade": 85}
+  ]
+ }/*文档1*/
+{"sno": "2022123","sname": "浩宇","gender": "male","age": 18 ,"department": "计算机", "courses":[]}/*文档2*/
+{"sno": "2022191","sname": "若汐","gender": "female","age": 18 ,"department": "数学",
+ "courses":[
+     {"cno": "2","cname":"C语言","credit":3,"grade": 88},
+     {"cno": "3","cname":"数据库","credit":4,"grade": 90}
+ ]
+}/*文档3*/
+{"sno": "2022267","sname": "依诺","gender": "female","age": 19 ,"department": "金融", "courses":[]}/*文档4*/
 ```
 
 ```SQL
@@ -279,8 +258,8 @@ db.student.aggregate( [
 						},  /*$match操作*/
 						{
 						    $group:{
-						        "_id":"department",   /*按department属性进行分组*/
-						        "totalnum":{"$count":{}} /*统计每个分组中的文档数量*/
+						        "_id":"$department",   /*按department属性进行分组*/
+						        "totalnum":{"$sum":1 /*统计每个分组中的文档数量*/
 						     }
 						},  /*$group操作*/
     					{
@@ -289,36 +268,28 @@ db.student.aggregate( [
 					] )
 ```
 
-例1.66是在单个文档集上依次进行\$match（筛选）、\$group（分组）和\$sort（排序）三个聚合操作。首先\$match操作从student文档集中筛选出gender属性为"female"的学生文档，然后\$group操作对筛选结果按department属性进行分组，并统计每个分组的个数，最后\$sort操作按照每个分组统计的个数降序排序。聚合查询的结果如下：
+例1.66是在学生文档集student 上依次进行\$match（筛选）、\$group（分组）和\$sort（排序）三个聚合操作。首先\$match操作从student文档集中筛选出gender属性为"female"的学生文档，然后\$group操作对筛选结果按department属性进行分组，并使用\$sum操作符计算每个分组中女生的人数，最后\$sort操作按照每个分组统计的个数降序排序。聚合查询的结果如下：
 
 ```SQL
-{"_id": "计算机","totalnum":2},
 {"_id": "数学","totalnum":1},
-{"_id": "金融","totalnum":1}
+{"_id": "金融","totalnum":1},
+{"_id": "计算机","totalnum":0},
 ```
 
 注意：\$group操作中的“\_id”字段是必填，用于指定分组属性，如果“\_id”值为null则表示对输入文档不进行分组，整个输入文档为一个组。\$group操作中的其他字段则是对分组之后的结果进行计算，比如求每个分组的平均值“\$avg”，返回每个分组的数值总和“$sum”，返回每个分组的最大值\$max等。\$sort操作是对指定的字段进行排序，-1表示升序排序，1表示降序排序。
 
 ```SQL
-[例1.67] 查询前3个学生的选课课程的情况，并输出学生学号、学生姓名、所选课程号以及成绩
+[例1.67] 查询学生的选课课程的情况，输出前3条学生选课情况（包含学生学号、学生姓名、所选课程名以及成绩）
 db.student.aggregate( [ 
-						{
-						    $lookup:{
-    							"from":"sc", /*student文档集与sc文档集进行左外连接*/
-    							"localFiled":"sno", /*指定student中的sno属性与sc进行等值连接*/
-    							"foreignField":"sno", /*指定sc中的sno属性与student进行等值连接*/
-    							"as"："selectedCourses"  /*指定连接结果的属性名称,输出的结果是数组*/
-   							 }
-						},  /*$lookup操作*/
     					{
-    						$unwind:"$selectedCourses"  /*将selectedCourse属性展开成多个单独的文档*/
+    						$unwind:"$courses"  /*将course属性展开成多个单独的文档*/
     					}, /*$unwind操作*/
 						{
 						    $project:{
     							"sno":1,
 						        "sname":1,  
-						        "cno":"$selectedCourses.cno",
-    							"grade":"$selectedCourses.grade"
+						        "cname":"$courses.cname",
+    							"grade":"$courses.grade"
 						     }
 						},  /*$project操作*/
     					{
@@ -327,32 +298,64 @@ db.student.aggregate( [
 					] )
 ```
 
-例1.67是对学生文档集和选课文档集关联之后再进行一系列的聚合操作，首先\$lookup操作将student文档集和sc文档集进行关联（左连接），以学号（sno）作为关联字段，把每个学生对应的选课信息合并到学生文档中，并将选课信息存放在名为selectedCourses的新字段里，selectedCourses字段是一个文档数组，然后\$unwind操作将selectedCourses数组展开，使得每一条学生选课结果成为一个独立的文档，之后\$project操作指定返回连接结果中的学生学号、学生姓名、所选课程号及成绩，其中所选课程号及成绩来自于开展后的selectedCourses字段，最后\$limit操作限制最终返回的结果数为3，即前3个学生选课文档。聚合查询的结果如下：
+例1.67在学生文档集student 上依次进行\$unwind（数组展开）、\$project（投影）和\$limit（限制）三个聚合操作。 首先\$unwind操作将courses数组展开，使得每一条学生选课记录成为一个独立的文档，例如，沐辰选修了两门课程，展开后会变成两个独立文档，每个文档分别对应沐辰选修某一门课程的信息。然后\$project操作指定返回数组展开结果中的学生学号、学生姓名、所选课程名及成绩字段，其中所选课程名及成绩分别来自于开展后的courses的cname和grade，最后\$limit操作限制最终返回的结果是前3条学生选课文档。聚合查询的结果如下：
 
 ```SQL
 {
 	"sno": "2022001",
 	"sname": "沐辰",
-	"cno": "1",
+	"cname": "高数",
 	"grade": 92
 }，
 {
 	"sno": "2022001",
 	"sname": "沐辰",
-	"cno": "3",
+	"cname": "数据库",
 	"grade": 85
 }，
 {
-	"sno": "2022123",
-	"sname": "浩宇",
-	"cno": null,
-	"grade": null
+	"sno": "2022191",
+	"sname": "若汐",
+	"cname": "C语言",
+	"grade": 88
 }
 
 ```
 
+注意，查询结果没有显示“浩宇”同学的选课情况，这是因为“浩宇”同学的选课信息courses为空，\$unwind操作符会直接跳过没有选课信息的文档，因此数组展开后的结果中不包含“浩宇”同学的信息。同理，\$unwind操作符执行之后的结果中也不包含“依诺”同学的信息。
 
-通常，为了进一步提高聚合操作的效率，构建聚合查询时会将\$match筛选操作放在查询的前面位置，这既可以快速过滤不需要的文档，减少后续聚合操作的数据量，还可以在查询时使用索引来提高性能。
+```SQL
+[例1.68] 查询每个学生的平均成绩，输出学生学号和平均成绩
+db.student.aggregate( [ 
+    					{
+    						$unwind:"$courses"  /*将course属性展开成多个单独的文档*/
+    					}, /*$unwind操作*/
+    					{
+						    $group:{
+						        "_id":"$sno",   /*按sno属性进行分组*/
+						        "averageGrade":{"$avg":"$courses.grade" /*计算每个分组中所有课程成绩的平均值*/
+						     }
+						},  /*$group操作*/
+						{
+						    $project:{
+    							"sno":"$_id",
+    							"averageGrade":1
+						     }
+						}  /*$project操作*/
+					] )
+```
+
+例1.68中，首先\$unwind操作将courses数组展开，使得每一条学生选课记录成为一个独立的文档，然后\$group操作对开展后的结果按sno属性进行分组，并使用$avg操作符计算每个组内所有课程成绩的平均值，将结果放在averageGrade字段中，最后\$project操作指定返回的字段包括学号和平均成绩，学号sno来自于分组的\_id，平均成绩来自于averageGrade字段。聚合查询结果如下：
+```SQL
+{
+	"sno": "2022001",
+	"averageGrade": 88.5
+}，
+{
+	"sno": "2022191",
+	"averageGrade": 89
+}
+```
 
 以上简单地介绍了MongoDB文档数据库的增删改查操作以及聚合操作。更加详细的内容，读者需要阅读对应系统的相关文档。
 
