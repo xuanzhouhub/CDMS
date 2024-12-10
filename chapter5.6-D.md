@@ -121,62 +121,48 @@
 
 为了能够进一步提高应用的性能，文档结构设计有时需要加入必要的冗余数据 。加入的冗余数据不会消耗过多的存储空间，不会产生额外的更新代价，且经常被查询，有助于提升查询效率。
 
-例如，在购物网站中，商家需要经常统计某个商品的总销售额。基于购物网站的文档模式设计二，MongoDB数据库的查询语句如下所示：
+例如，在购物网站中，商家需要经常统计某个商品的总销售量。基于购物网站的文档模式设计二，MongoDB数据库的查询语句如下所示：
 
 ```SQL
-基于购物网站的文档模式设计二，统计某个商品的总销售，其查询语句如下：
+基于购物网站的文档模式设计二，统计某个商品的总销售量，其查询语句如下：
 db.Order.aggregate( [ 
-        {
-            $match:{"OrderLine.Pid":" "} /*查找包含某商品号的所有订单*/
-        },  
         {
             $unwind:{"$OrderLine"} /*将OrderLine数组展开为单独的文档*/
         },  
         {
-            $match:{"OrderLine.Pid":" "} /*再次过滤，确保只处理某商品*/
-        },
-        {
-            $lookup:{
-                "from":"Product", 
-                "localFiled":"OrderLine.Pid", 
-                "foreignField":"Pid", 
-                "as"："ProductInfo"  
-             } /*连接商品文档集Product，获取商品价格*/
-        },  
-        {
-            $unwind:{"$ProductInfo"} /*展开ProductInfo数组，确保每个订单行对应一个商品信息*/
+            $match:{"OrderLine.Pid":"某具体商品号 "} /*过滤，确保只处理某商品*/
         },
         {
             $group:{
                 "_id":"$OrderLine.Pid", /*按商品号分组*/
-                "totalSales":{$sum:{$multiply:["$OrderLine.Quantity","$ProductInfo.Price"]}} /*计算商品的总销售额*/
+                "totalQuantity":{$sum:"$OrderLine.Quantity"} /*计算商品的总销售量*/
              }
         }
 ] )
 ```
 
-上述查询需要使用文档数据库的聚合计算，需要经过\$match，\$unwind，\$lookup，\$group等多个阶段的处理才能得到最终的结果。尤其在$lookup阶段，需要将订单文档集Order和商品文档集Product进行左外连接操作，执行该连接操作需要对商品文档集进行扫描，从而使得查询效率很低。
+上述查询需要使用文档数据库的聚合计算，需要经过\$unwind，\$match，\$group等多个阶段的处理才能得到最终的结果。在$unwind阶段，需要对订单文档集Order进行全文档扫描，因此查询效率很低。
 
-为了提高查询效率，我们可以在商品文档集Product中冗余存储商品的总销售额TotalSales属性。优化之后的文档模式设计二及其查询语句如下：
+为了提高查询效率，我们可以在商品文档集Product中冗余存储商品的总销售量TotalQuantity属性。优化之后的文档模式设计二及其查询语句如下：
 
 ```SQL
 优化之后的购物网站的文档模式设计二
 用户文档集：User{Uid, Uname, Uadd, Tel, Pref[]};
-商品文档集：Product{Pid, Pname, Category, Price, Padd, TotalSales};
+商品文档集：Product{Pid, Pname, Category, Price, Padd, TotalQuantity};
 订单文档集：Order{Oid, Uid, Date,OrderLine[{Pid, Quantity}]}；
 
-统计某个商品的总销售额，其查询如下：
+统计某个商品的总销售量，其查询如下：
 db.Prodect.find(
-	{"Pid":" "},
-    {"TotalSales":1}
+	{"Pid":"具体商品号 "},
+    {"TotalQuantity":1}
 )
-每次产生新订单时，需要更新购买商品的总销售：
+每次产生新订单时，需要更新购买商品的总销售量：
 db.Product.updateOne(
     {"Pid":" "},
-    {$inc: {"TotalSales":{$multiply:["$Price", "购买数量"]}}}
+    {$inc: {"TotalQuantity":"购买数量"}}
 )
 ```
 
-在商品文档集中冗余存储商品的总销售额TotalSales，能够避免文档数据库的聚合查询以及连接操作，从而使得查询语句的执行效率非常高。而冗余存储带来的代价是每次购买商品时需要同步更新该商品的总销售额。如果更新操作对应用性能的影响比较小，那么数据冗余时可接受的。
+在商品文档集中冗余存储商品的总销售量TotalQuantity，能够避免聚合查询中对Order文档集的全文档扫描，从而使得查询语句的执行效率非常高。而冗余存储带来的代价是每次购买商品时需要同步更新该商品的总销售量。如果更新操作对应用性能的影响比较小，那么数据冗余是可接受的。此外，冗余存储商品的总销售量，也便于计算商品的总销售额，否则计算商品的总销售额需要将Order文档集和Product商品文档集进行连接操作。
 
 [**上一页<<**](chapter5.5.md) | [**>>下一页**](chapter5.7.md)
