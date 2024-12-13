@@ -13,7 +13,8 @@
 
 
 <center>
-	<img src="fig/ch3.6-graph-arch.jpg" width="80%" alt="cypher-cycle" />
+	<img src="fig/
+	" width="80%" alt="cypher-cycle" />
 	<br>
 	<div display: inline-block; padding : 2px>
 		图 3.13-图数据库软件架构
