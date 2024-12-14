@@ -16,7 +16,7 @@
 文档数据库的主索引实现的是从文档的"\_id"属性值到文档所在数据页地址的映射，它只能支持基于"\_id"属性值的查询需求，不能满足其他的查询需求。例如，在例1.55中，从student文档集中查找gender属性为"female"并且department属性为"数学"的文档，文档数据库系统必须扫描student文档集中的每个文档才能返回查询结果。
 
 ```bson
-[例1.55] 文档查询
+[例2.5] 文档查询
 db.student.find( {
   "gender": "female",
   "department": "数学"
@@ -39,7 +39,7 @@ db.student.find( {
 文档数据库系统对外提供了指令允许用户创建辅助索引。文档数据库系统MongoDB的索引创建指令为createIndex，该指令包含两个参数，第一个参数指定要创建的属性字段和索引键值的排序类型，第二个参数为可选参数。
 
 ```bson
-[例2.5] 索引创建
+[例2.6] 索引创建
 db.student.createIndex({"sno":1})  // 单键索引
 db.student.createIndex({"sname":1, "age":-1})  //复合索引
 ```
