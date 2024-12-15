@@ -129,7 +129,7 @@ MATCH (s:Student)-[:ENROLLS]-(c:Course)
 
 3. 节点或关系属性
 
-我们已经讨论了如何使用 Cypher 表示节点、关系和标签，现在我们要了解如何表示属性图中的**属性**。属性就是为节点和关系提供额外信息的键值对。为了在 Cypher 中表示属性，我们可以在节点的圆括号或关系的方括号内使用花括号。然后，将属性的名称和值放在花括号内。对于多属性，则在花括号内以逗号分隔。如图R3.4所示，其中：
+我们已经讨论了如何使用 Cypher 表示节点、关系和标签，现在我们要了解如何表示属性图中的**属性**。属性就是为节点和关系提供额外信息的键值对。为了在 Cypher 中表示属性，我们可以在节点的圆括号或关系的方括号内使用花括号。然后，将属性的名称和值放在花括号内。对于多属性，则在花括号内以逗号分隔。如图1.40所示，其中：
 - 节点属性：`(s:Student {Sno: 2022001, Sname: '沐辰', Gender: '男', Age: 19, Dept: '计算机'})`，`(c:Course {Cno: 1, Cname: '高数', Credit: 4})`
 - 关系属性：`-[rel:ENROLLS {Grade: 92}]->`
 
@@ -178,7 +178,7 @@ Cypher 语法使用了一系列**关键字**和符号来定义和操作图数据
 （1）创建节点和边
 
 在Cypher中，要创建图模型，需要使用`CREATE`关键字。例如，按照图R3.5的图模型，创建一个姓名为“沐辰”的 `Student` 类节点和两个课程名分别为“高数”和“数据库”的 `Course` 类节点，然后在上述学生-课程节点之间分别创建边：
-```Cypher
+```SQL
 CREATE (mc:Student {Sno: 2022001, Sname: '沐辰', Gender: '男', Age: 19, Dept: '计算机'})
 CREATE (math:Course {Cno: 1, Cname: '高数', Credit: 4})
 CREATE (db:Course {Cno: 3, Cname: '数据库', Credit: 4})
@@ -192,7 +192,8 @@ CREATE
 我们可以通过创建唯一约束来确保指定属性的值在所有相关节点中是唯一的，无论这些节点是在约束创建之前还是之后创建的，否则将会抛出错误。
 
 例如，我们可以分别对学生节点的学号和课程节点的课程号创建唯一约束：
-```Cypher
+
+```SQL
 CREATE CONSTRAINT IF NOT EXISTS FOR (s:Student) REQUIRE (s.Sno) IS UNIQUE;
 CREATE CONSTRAINT IF NOT EXISTS FOR (c:Course) REQUIRE (c.Cno) IS UNIQUE;
 ```
@@ -204,7 +205,7 @@ CREATE CONSTRAINT IF NOT EXISTS FOR (c:Course) REQUIRE (c.Cno) IS UNIQUE;
 当然，我们也可以不创建任何唯一约束，通过Neo4j自动生成的内部标识符（ID）来唯一标识节点和边，该ID可以通过函数`id()`获得。
 
 例如，返回学号为2022001的节点的内部ID：
-```Cypher
+```SQL
 MATCH (s:Student {Sno: 2022001})
 RETURN id(s);
 ```
@@ -212,7 +213,7 @@ RETURN id(s);
 #### 查找节点
 
 现在让我们考虑学生选课数据库图模型的一个简单查询：返回所有的学生。 `MATCH` 会在图中查找所有匹配的节点或关系，`RETURN` 子句用于指定查询结果中需要返回的内容。学生可以在 `Student` 标签下的分组中找到，因此，我们将需要匹配的节点放到 `MATCH` 子句中，然后在 `RETURN` 子句中返回找到的节点：
-```Cypher
+```SQL
 MATCH (s:Student)
 RETURN s
 ```
@@ -229,7 +230,7 @@ RETURN s
 | {"Sno": 2022001, "Sname": "依诺", "Gender": "女", "Age": 19, "Dept": "金融"}  |
 
 当然，我们也可以限制结果集，例如只返回2个节点：
-```Cypher
+```SQL
 MATCH (movie:Movie)
 RETURN movie
 LIMIT 2
@@ -237,7 +238,7 @@ LIMIT 2
 该查询的结果将只有两行。
 
 现在考虑另一个查询：查找学号为2022001的节点，并返回他的名字和所属系。此查询可写作：
-```Cypher
+```SQL
 MATCH (s:Student {Sno: 2022001})
 RETURN s.Sname AS name, s.dept AS dept
 ```
@@ -254,7 +255,7 @@ RETURN s.Sname AS name, s.dept AS dept
 需要注意的是，如果某个子句返回一个空的中间结果表，就没有内容传递给后续的子句，从而终止查询。有一些方法可以规避这种行为。例如，可以将 `MATCH` 子句替换为 `OPTIONAL MATCH`，对于找不到的匹配项，`OPTIONAL MATCH` 会用 null 代替。
 
 与 SQL 中的 `WHERE` 子句类似，Cypher 中的 `WHERE` 子句用于在查询中增加条件，以便只返回符合特定条件的节点、关系或路径。`WHERE` 子句通常与 `MATCH` 子句一起使用，用于限定查询匹配的图元素。考虑以下查询：返回所有计算机系学生的学号和姓名。该查询也可以用`WHERE`写作如下：
-```Cypher
+```SQL
 MATCH (s:Student)
 WHERE s.dept = '计算机'
 RETURN s.Sno AS Sno, s.Sname AS name
@@ -272,7 +273,7 @@ Cypher 允许在 `WHERE` 子句中使用逻辑连词 `AND`、`OR`、`NOT`。逻�
 #### 查找连通节点
 
 在 `MATCH` 子句中，我们不仅可以匹配节点，还可以匹配节点之间的关系。通过这种方式，我们可以指定图的结构，在一条语句中描述节点及其关系，查询包含特定关系的节点，而不需要多次查询。考虑以下查询：查找选了高数课的学生，并返回该学生学号和姓名。
-```Cypher
+```SQL
 MATCH (s:Student)-[:ENROLLS]->(c:Course {Cname: '高数'})
 RETURN s.Sno as Sno, s.Sname AS name
 ```
@@ -280,7 +281,7 @@ RETURN s.Sno as Sno, s.Sname AS name
 这个查询与选择高数课的学生的图表相匹配，`MATCH` 子句中的关系 `-[:ENROLLS]->` 用来指定要匹配的 `Student` 节点和 `Course` 节点之间的特定关系，最终返回学生的`Sno`属性和`Sname` 属性。
 
 我们不仅可以通过关系查找连通节点，还可以通过连通节点来查找它们之间的关系。考虑以下查询：查找所有与“沐辰”有关联的课程，并返回该关系类型以及课程名。该查询可以用 Cypher 写为：
-```Cypher
+```SQL
 MATCH (s:Student {name:'沐辰'})-[rel]->(c:Course)
 RETURN type(rel) AS type, c.Cname AS Cname
 ```
@@ -304,7 +305,7 @@ RETURN s.Sno AS Sno, s.Sname AS name
 有多种方法可以使用 Cypher 在图中搜索节点之间的路径。
 
 对于**定长模式**的查询，使用量词（`{n}`）指定模式中节点之间的距离（跳数）。例如，考虑以下查询：查找与“沐辰”节点存在两跳关系的所有 `Student` 类节点，并按学号顺序返回其学号和姓名。`ORDER BY` 子句可以让查询结果中的元组按排列顺序显示，`DISTINCT` 运算符可确保结果不包含重复值。为了按学号顺序列出所有与“沐辰”存在两跳关系的 `Student` 类节点，该查询可以用 Cypher 写作如下：
-```Cypher
+```SQL
 MATCH (mc:Student {Sname:'沐辰'})--{2}(s:Student)
 RETURN DISTINCT s.Sno AS Sno, s.Sname AS Sname
 ORDER BY s.Sno
@@ -351,7 +352,8 @@ Cypher 中还可以实现推荐系统的功能。
 - 计算课程出现次数（推荐指数）并返回结果
 
 通过使用`WITH`子句，该查询可以用 Cypher 写作如下，其中`collect` 是一个聚合函数，用于将查询结果中的多个值收集到一个列表中，`count(*)`则用于计算匹配到的所有记录的数量：
-```Cypher
+
+```SQL
 // Step 1: 找到“沐辰”及其所属的系，并获取他已选的课程
 MATCH (mc:Student {Sname: '沐辰'})-[:ENROLLS]->(mcCourse:Course)
 WITH mc, mc.dept AS mc_dept, collect(mcCourse.Cname) AS mc_courses
@@ -366,7 +368,8 @@ LIMIT 3
 ```
 
 现在考虑另一个查询：既和“沐辰”上过同一门课，又和“若汐”上过同一门课的同学。该查询可以用 Cypher 写作如下：
-```Cypher
+
+```SQL
 MATCH (:Student {Sname:'沐辰'})-[:ENROLLS]->(:Course)<-[:ENROLLS]-(coStu:Student),
   (coStu)-[:ENROLLS]->(:Course)<-[:ENROLLS]-(:Student {name:'若汐'})
 WHERE coStu.Sname <> '沐辰' AND coStu.Sname <> '若汐'
@@ -384,13 +387,15 @@ DETACH DELETE mc
 使用 `DETACH DELETE` 将删除顶点及其相连的所有一跳关系。 
 
 如果仅删除关系，保留顶点，则可以用 Cypher 写作如下：
-```Cypher
+
+```SQL
 MATCH (mc:Student {Sname:'沐辰'})-[rel]->(:Course)
 DELETE rel
 ```
 
 如果要删除图中的所有节点和关系，请运行以下查询：
-```Cypher
+
+```SQL
 MATCH (n)
 DETACH DELETE n
 ```
