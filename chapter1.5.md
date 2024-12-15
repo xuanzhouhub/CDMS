@@ -66,9 +66,10 @@ Where city = ‘Shanghai’ And birth_year >= 2000;
 	<img src="fig/ch1.5-tradeoff.JPG" width="60%" alt="Language" />
 	<br>
 	<div display: inline-block; padding : 2px>
-         图 1.3 声明式数据访问语言vs过程式数据访问语言
+         图 1-5-1 声明式数据访问语言vs过程式数据访问语言
 	</div>
 </center>
+
 
 
 ### 1.5.3  数据访问语言的能力范围
@@ -89,9 +90,10 @@ Where city = ‘Shanghai’ And birth_year >= 2000;
 	<img src="fig/ch1.5-tradeoff2.JPG" width="60%" alt="Language" />
 	<br>
 	<div display: inline-block; padding : 2px>
-        图 1.4 SQL数据库vsNoSQL数据库
+        图 1-5-2 SQL数据库vsNoSQL数据库
 	</div>
 </center>
+
 
 
 本书将对多种数据管理系统作深入介绍。区分这些系统的核心标准就是它们使用的数据模型和数据访问语言。其中，数据访问语言是构建在数据模型之上的。因此，我们通常将二者一并考虑。它们一起决定了一个数据管理系统的功能，也决定了其架构和具体实现方式。
