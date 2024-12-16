@@ -16,7 +16,7 @@ ABORT /*事务回滚*/
 
 下面给出转账交易在关系数据管理系统中的事务定义。
 ```SQL
-[例4.1] 账户U1向账户U2转账50元（事务T0）。
+账户U1向账户U2转账50元（事务T0）。
 BEGIN TRANSACTION
 SELECT Balance A FROM Deposit WHERE ID='U1' FOR UPDATE;
 IF(A < 50) 

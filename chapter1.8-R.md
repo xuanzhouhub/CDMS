@@ -86,7 +86,7 @@ ALTER TABLE <表名>
 [ ADD <表级完整性约束> ] 
 [ DROP [COLUMN] <列名> [CASCADE | RESTRICT] ] 
 [ DROP CONSTRAINT <完整性约束名> [CASCADE | RESTRICT] ] 
-[ ALTER COLUMN <列名><数据类型> ]； 
+[ ALTER COLUMN <列名><数据类型> ];
 ```
 修改基本表时可以增加新列、新的列级完整性约束条件，新增表级完整性约束条件，删除表中的列，删除完整性约束条件和修改原有列的定义。删除列和完整性约束条件时可以添加关键字CASCADE和RESTRICT。CASCADE表示级联删除，即删除列和约束条件的同时删除引用该列和该约束条件的其他对象；RESTRICT则指如果该列或该约束条件被其他对象引用，则不能删除。
 
@@ -105,7 +105,7 @@ ALTER TABLE Student ALTER COLUMN Gender INT;
 当不再需要某个基本表时，SQL语言使用**DROP TABLE**语句删除基本表，其基本格式如下：
 
 ```SQL
-DROP TABLE <表名> [CASCADE | RESTRICT] ；
+DROP TABLE <表名> [CASCADE | RESTRICT];
 ```
 
 其中，CASCADE关键字指级联删除，即删除基本表的同时删除基本表的相关依赖对象，如索引、触发器，有的关系数据库管理系统还会同时删除视图。读者可以查阅使用产品的用户手册，了解具体的删除策略；RESTRICT表示如果预删除的基本表被其他表的约束所引用（如，FOREIGN KEY）或者基本表有视图、触发器、存储过程和函数时，则基本表不能被删除。默认情况下设置为RESTRICT。
