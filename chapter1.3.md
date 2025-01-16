@@ -30,4 +30,10 @@ Codd认为，基于图结构的“网状模型”或“层次模型”对软件�
 
 再次回到本书的写作初衷，对数据管理系统的学习不能再单纯以关系数据库系统为中心，而应该扩展到更广泛的系统。
 
+### 练习题
+
+**1**. 请在互联网上搜索并阅读1981年E. F. Codd撰写的图灵奖获奖文章《Relational database: a practical foundation for productivity》。谈一谈读后的体会。
+
+**2**. 请在互联网上搜索并阅读2010年IEEE Computer杂志上的文章《Will NoSQL Databases Live Up to Their Promise》。基于这篇文章谈一谈你对SQL数据库和NoSQL数据库的理解。
+
 [**上一页<<**](chapter1.2.md) | [**>>下一页**](chapter1.4.md)
