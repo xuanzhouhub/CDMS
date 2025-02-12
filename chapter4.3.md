@@ -180,4 +180,25 @@ B+树是数据管理系统普遍使用的索引结构，它的性能往往会决
 
 我们可以看到，对数据管理系统而言，并发控制是一套复杂的机制。它既要能够保证数据访问的正确性，又要兼顾数据访问的并行度和性能。虽然像两阶段锁这样的通用并发控制机制可以确保正确性，但却难以保证并行度和性能。为了性能，我们往往需要针对具体的数据访问流程构建定制化的并发控制机制。在现实的数据管理系统中，我们常常是将通用并发控制机制和定制化并发控制机制混合起来使用的。这事实上增加了系统构建的复杂度，却是不得已而为之的策略。
 
+### 练习题
+
+**1**. 以下哪种加锁方式可以保证操作的原子性？
+ <ol type="A">
+  <li>lock(A); update(A); lock(B); update(B); unlock(A); unlock(B);</li>
+  <li>lock(A); lock(B); update(A); update(B); unlock(A); unlock(B);</li>
+  <li>lock(A); update(A); lock(B); unlock(A); update(B); unlock(B);</li>
+  <li>都可以</li>
+ </ol>
+
+**2**. 日志和锁需要配合起来使用才能完整确保操作的原子性。用log表示将日志写到硬盘，用write表示把数据写到硬盘，用lock和unlock表示加锁与解锁。如果系统使用undo日志，那么以下哪个执行序列是日志和锁的最合理搭配方式？
+ <ol type="A">
+  <li>log(o1,start); log(o1,A=5); lock(A); write(A=6); unlock(A); log(o1,end);</li>
+  <li>log(o1,start); lock(A); log(o1,A=5); write(A=6); log(o1,end); unlock(A);</li>
+  <li>log(o1,start); log(o1,A=5); lock(A); write(A=6); log(o1,end); unlock(A);</li>
+  <li>lock(A); log(o1,start); log(o1,A=5); write(A=6); log(o1,end); unlock(A);</li>
+ </ol>
+
+ **3**. 思考题：跳表（Skip List）也是一种常见的索引。学习者们可以在互联网上查到跳表的工作原理。请思考，如何在调表上实现高效的并发控制。
+
+
 [**上一页<<**](chapter4.2.md) | [**>>下一页**](chapter4.4.md)
