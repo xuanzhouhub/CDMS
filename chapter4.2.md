@@ -145,4 +145,30 @@ Redo日志以及Undo/Redo日志均要求系统在恢复时重做所有已经事�
 （3） 从O的“开始日志”处向后扫描日志文件，依次重做扫描到所有数据更新，直至日志文件的末尾。
 （4） 再次从尾部向前扫描日志文件，对所有事实上未完成的操作，依次对其更新操作进行还原，直至O的“开始日志”处。
 
+### 练习题
+
+**1**. 系统使用了undo日志，在故障发生后，发现日志记录如下：<o1,start>, <o2,start>, <o2,A=5>, <o2,B=4>, <o2,end>, <o1,A=3>，<o1,C=3>。请问：系统恢复后A的取值是多少？
+ <ol type="A">
+  <li>5</li>
+  <li>4</li>
+  <li>3</li>
+  <li>不知道</li>
+ </ol>
+
+ **2**. 我们用log表示将日志写到硬盘，用write表示把数据写到硬盘。如果系统使用undo日志，那么以下哪个操作执行序列是不能保证原子性的？
+ <ol type="A">
+  <li>log(o1,start), log(o1,A=5), write(A=6), log(o1,B=3), write(B=4), log(o1,end)</li>
+  <li>log(o1,start), log(o1,A=5), write(A=6), write(B=4), log(o1,B=3), log(o1,end)</li>
+  <li>log(o1,start), log(o1,A=5), log(o1,B=3), write(A=6), write(B=4), log(o1,end)</li>
+  <li>log(o1,start), log(o1,A=5), log(o1,B=3), write(B=4), write(A=6), log(o1,end)</li>
+ </ol>
+
+ **3**. 我们用log表示将日志写到硬盘，用write表示把数据写到硬盘。如果系统使用redo日志，那么以下哪个操作执行序列是不正确或不可能发生的？
+ <ol type="A">
+  <li>log(o1,start), log(o1,A=5), log(o1,end), write(A=5), log(o2,start), log(o2,A=6), log(o2,end), write(A=6)</li>
+  <li>log(o1,start), log(o1,A=5), log(o1,end), log(o2,start), log(o2,A=6), write(A=5), log(o2,end), write(A=6)</li>
+  <li>log(o1,start), log(o1,A=5), log(o1,end), log(o2,start), log(o2,A=6), log(o2,end), write(A=6)</li>
+  <li>log(o1,start), log(o2,start), log(o2,A=6), log(o2,end), log(o1,A=5), log(o1,end), write(A=5), write(A=6)</li>
+ </ol>
+
 [**上一页<<**](chapter4.1.md) | [**>>下一页**](chapter4.3.md)
