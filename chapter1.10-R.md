@@ -254,6 +254,37 @@ WHERE NOT EXISTS (SELECT * FROM SC y WHERE y.sno=x.sno);
 		图 1-10-6 相关子查询示例
 	</div>
 </center>
+### 练习题
+
+**1**. 关于SQL查询和关系代数之间的关系，以下哪个说法是不正确的？
+
+ <ol type="A">
+ <li>一个SQL查询的结果不一定是一个关系</li>
+ <li>求表T在属性a,b上的投影，应使用查询 Select a,b From T</li>
+ <li>求表T在属性a,b上的投影，应使用查询 Select Distinct a,b From T</li>
+ <li>求条件a>10在表T上的选择结果，应使用查询 Select * From T Where a>10</li>求条件a>10在表T上的选择结果，应使用查询 Select * From T Where a>10
+ </ol>
+
+**2**. 对于一张
+
+ <ol type="A">
+ <li>s_no作为主键更优</li>
+ <li>(s_no,s_name)作为主键更优</li>
+ <li>两者各有优势</li>
+ <li>以上说法均不对</li>
+ </ol>
+
+**3**. 你觉得
+
+ <ol type="A">
+ <li>一个人的住址</li>
+ <li>学生选课表中的成绩</li>
+ <li>一本出版物的出版社</li>
+ <li>一门课的教材</li>
+ </ol>
+
+**6.** 如果我们在属性A上定义Primary Key或Unique这样的约束，那么数据库将要求表中的任何一个元组在A上取值都是唯一的。也就是说，当我们往表中重复插入A值时，数据库将立即感知到，并禁止我们这样做。请问：数据库是如何感知我们往表中重复插入A值的？
+
 
 
 [**上一页<<**](chapter1.9-R.md) | [**>>下一页**](chapterR1.11-R.md)

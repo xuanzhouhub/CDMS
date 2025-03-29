@@ -20,8 +20,6 @@ SQL是一种面向集合操作的非过程式设计语言，既可以独立地�
 		图 1-7-1 SQL语言分类
 	</div>
 </center>
-
-
 * 数据定义语言（Data Definition Language, DDL）：定义数据库中的各类对象，如表、视图、索引、存储过程、触发器等。数据定义指令包括CREATE、DROP、ALTER、TRUNCATE。
 
 * 数据查询语言（Data Query Language, DQL）：查询数据库中的数据。数据查询指令有SELECT。
