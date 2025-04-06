@@ -238,4 +238,24 @@
 
 文档匹配实际上提供了一种查询方式，让我们可以在多个文档中找到满足匹配条件的文档。
 
+### 练习题
+
+**1**. 一个文档数据库里面有两类对象，书（book）和人（person）。书和人之间存在一种写作的关系，即某个人是某本书的作者。请问这种写作关系的信息应该如何存放？
+
+ <ol type="A">
+ <li>在描述书的文档中增加一个“作者（author）”属性，取值为其作者的名字。</li>
+ <li>在描述人的文档中增加一个“著作（writing）”属性，取值为其著作的标题。</li>
+ <li>在描述书的文档中增加一个“作者（author）”属性，取值为其作者的ID。</li>
+ <li>A和B均可。</li>
+ </ol>
+
+**2**. 考虑以下4个查询 Q1: Select a,b From T1, T2 Where T1.c=T2.c And T1.c=100; Q2: Select a,b From T1, T2 Where T1.c=100 And T2.c=100; Q3: Select a,b From T1, T2 Where T1.c=T2.c And T1.c>100; Q4: Select a,b From T1, T2 Where T1.c>100 And T2.c>100; 说法正确的是：
+
+ <ol type="A">
+ <li>Q1和Q2结果相同；Q3和Q4结果不同；</li>
+ <li>Q1和Q2结果不同；Q3和Q4结果相同；</li>
+ <li>Q1和Q2结果相同；Q3和Q4结果相同；</li>
+ <li>4个查询结果均不同。</li>
+ </ol>
+
 [**上一页<<**](chapter1.11-R.md) | [**>>下一页**](chapter1.13-D.md)

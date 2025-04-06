@@ -264,26 +264,75 @@ WHERE NOT EXISTS (SELECT * FROM SC y WHERE y.sno=x.sno);
  <li>求表T在属性a,b上的投影，应使用查询 Select Distinct a,b From T</li>
  <li>求条件a>10在表T上的选择结果，应使用查询 Select * From T Where a>10</li>求条件a>10在表T上的选择结果，应使用查询 Select * From T Where a>10
  </ol>
-
-**2**. 对于一张
-
- <ol type="A">
- <li>s_no作为主键更优</li>
- <li>(s_no,s_name)作为主键更优</li>
- <li>两者各有优势</li>
- <li>以上说法均不对</li>
- </ol>
-
-**3**. 你觉得
+**2**. 考虑以下4个查询 Q1: Select a,b From T1, T2 Where T1.c=T2.c And T1.c=100; Q2: Select a,b From T1, T2 Where T1.c=100 And T2.c=100; Q3: Select a,b From T1, T2 Where T1.c=T2.c And T1.c>100; Q4: Select a,b From T1, T2 Where T1.c>100 And T2.c>100; 说法正确的是：
 
  <ol type="A">
- <li>一个人的住址</li>
- <li>学生选课表中的成绩</li>
- <li>一本出版物的出版社</li>
- <li>一门课的教材</li>
+ <li>Q1和Q2结果相同；Q3和Q4结果不同；</li>
+ <li>Q1和Q2结果不同；Q3和Q4结果相同；</li>
+ <li>Q1和Q2结果相同；Q3和Q4结果相同；</li>
+ <li>4个查询结果均不同。</li>
  </ol>
 
-**6.** 如果我们在属性A上定义Primary Key或Unique这样的约束，那么数据库将要求表中的任何一个元组在A上取值都是唯一的。也就是说，当我们往表中重复插入A值时，数据库将立即感知到，并禁止我们这样做。请问：数据库是如何感知我们往表中重复插入A值的？
+**3**. 在学生表Student(s_no, s_name, birthday, gender)和学生选课表SC(s_no, c_no, grade)中求每个学生的姓名和平均成绩。哪个查询表达正确？
+
+ <ol type="A">
+ <li>Select s_name, AVG(grade) From Student, SC Where Student.s_no=SC.s_no Group By Student.s_no</li>
+ <li>Select s_name, AVG(grade) From Student, SC Where Student.s_no=SC.s_no Group By SC.s_no</li>
+ <li>Select s_name, AVG(grade) From Student, SC Group By SC.s_no</li>
+ <li>Select s_name, AVG(grade) From Student, SC Where Student.s_no=SC.s_no Group By SC.s_no, s_name</li>
+ </ol>
+
+**4** 以下哪些查询是等价的？
+
+ <ol type="A">
+ <li>Select Count(*) From T Where b>100 Group By a 和 Select Count(*) From T Group By a</li>
+ <li>Select Count(*) From T Where b>100 Group By a 和 Select Count(*) From T Group By a Having AVG(b)>100</li>
+ <li>Select AVG(a) From T Where a<10 Group By a 和 Select AVG(a) From T Group By a Having AVG(a)<10</li>
+ <li>Select a,AVG(b) From T Where b>100 Group By a 和 Select a,AVG(b) From T Group By a Having AVG(b)>10</li>
+ </ol>
+
+**5** 以下查询将得到什么结果？SELECT COUNT(\*) FROM Student WHERE Sno IN (SELECT Sno FROM SC WHERE Cno IN (SELECT Cno FROM Course WHERE Cname= '数学' ) AND grade > 60 ) AND gender = 'F';
+
+ <ol type="A">
+ <li>选修了数学课的学生人数</li>
+ <li>选修了数学课的女生人数</li>
+ <li>在数学课上成绩超过60分的女生人数</li>
+ <li>选修了数学课并且在所有课程中成绩都超过60分的女生人数</li>
+ </ol>
+
+**6** 以下查询将得到什么结果？SELECT Sno FROM SC Group By Sno Having AVG(grade) > (SELECT AVG(grade) FROM SC Where Cno = 'C001' );
+
+ <ol type="A">
+ <li>在C001课程上超过平均成绩的学生学号</li>
+ <li>平均成绩超过在C001课程上成绩的学生学号</li>
+ <li>平均成绩超过C001课程平均成绩的学生学号</li>
+ <li>选修了平均成绩超过C001课程平均成绩的课程的学生学号</li>
+ </ol>
+
+**7** 以下查询将得到什么结果？SELECT Sno, Count(Cno) FROM SC x WHERE Grade >= (SELECT AVG(Grade) FROM SC y WHERE y.Cno = x.Cno ) Group By Sno;
+
+ <ol type="A">
+ <li>在每门课上的成绩都超过该门课平均成绩的学生</li>
+ <li>每个学生在多少门课程上的成绩超过了课程平均成绩</li>
+ <li>每个学生在多少门课程上的成绩超过了他所有选修课程的平均成绩</li>
+ <li>每个学生在多少门课程上的成绩超过了所有人的平均成绩</li>
+ </ol>
+
+**8.** 如果我们在属性A上定义Primary Key或Unique这样的约束，那么数据库将要求表中的任何一个元组在A上取值都是唯一的。也就是说，当我们往表中重复插入A值时，数据库将立即感知到，并禁止我们这样做。请问：数据库是如何感知我们往表中重复插入A值的？
+
+**9.** 假设我们有三个关系，其模式分别为
+
+```sql
+ Student(sno, sname, birthday, gender )
+ Course(cno,cname,credit)
+ SC(sno,cno,grade)
+```
+
+   请写出以下信息需求的SQL查询：
+
+  * 在数学课上成绩超过90分的男生姓名；
+  * 数学课成绩超过历史课成绩的女生姓名；
+  * 平均成绩超过90分的女生姓名。
 
 
 

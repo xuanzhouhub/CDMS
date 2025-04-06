@@ -379,4 +379,26 @@ db.student.aggregate( [
 
 以上简单地介绍了MongoDB文档数据库的增删改查操作以及聚合操作。更加详细的内容，读者需要阅读对应系统的相关文档。
 
+### 练习题
+
+**1**. 文档数据库允许一个属性有多个取值，比如{...colors: ["red", "blank"] ...} 或者 {...hobbies: ["red", "blank"] ...}。那么，哪些文档满足以下查询db.inventory.find( { tags: ["computer", "music"] } )？
+
+ <ol type="A">
+ <li>仅{... tags: ["computer", "music"]... }。</li>
+ <li>{... tags: ["computer"]... }和{... tags: ["music"]... }</li>
+ <li>{... tags: ["computer", "music"]... }和{... tags: ["computer", "music", "movie"]... }</li>
+ <li>{... tags: ["computer"]... }和{... tags: ["music"]... }和{... tags: ["computer", "music"]... }和{... tags: ["computer", "music", "movie"]... }</li>
+ </ol>
+
+**2**. 数据库系统的增、删、改、查操作中的改操作（update）通常可以由一个删操作（delete）和一个增操作（create）实现。那么为什么我们不把“增、删、改、查”（CRUD）简化为“增、删、查”（CRD）？以下哪个理由不成立？
+
+ <ol type="A">
+ <li>先删后增虽然可以代替改，但其性能可能比改差。</li>
+ <li>先删后增的程序写起来比较复杂，没有一个单独的改操作简洁。</li>
+ <li>先删后增是两个独立的操作。如果中间出现状况（比如掉电或者bug），会出现只删未增的情况，导致数据正确性问题。</li>
+ <li>这只是一种习俗，二者并没有什么本质区别。</li>
+ </ol>
+
+
+
 [**上一页<<**](chapter1.12-D.md) | [**>>下一页**](chapter1.14-G.md)

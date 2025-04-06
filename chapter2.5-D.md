@@ -71,5 +71,34 @@ db.student.find({"sname":"沐辰", "age":"21"})
 
 以上简单地介绍了MongoDB文档数据库的数据组织方式、索引的创建以及索引的使用原则。其他文档数据库系统的索引创建与使用，读者需要阅读对应系统的相关文档。
 
+### 练习题
+
+**1**. 如果我们在属性price上创建一个索引（比如使用指令db.myColl.createIndex( { price: 1 }) ），那么以下哪个查询可以无法从这个索引获益？
+
+ <ol type="A">
+ <li>db.myColl.findone({ category:"apple", price:20 })</li>
+ <li>db.myColl.findone({ category:"apple" })</li>
+ <li>db.myColl.findone({ price:{$gte:20, $lte:30} })</li>
+ <li>db.myColl.findone({ category:"apple", price:{$gte:20, $lte:30} })</li>
+ </ol>
+
+**2**. 如果我在多个属性上创建一个复合索引，例如db.myColl.createIndex({ score: 1, price: 1, category: 1 })，那么以下哪个查询无法从索引获益？
+
+ <ol type="A">
+ <li>db.myColl.find({ category:"apple", price:20, score:5 })</li>
+ <li>db.myColl.find({ score:{$gte:4} })</li>
+ <li>db.myColl.find({ category:"apple", price:{$gte:20, $lte:30} })</li>
+ <li>db.myColl.find({ category:"apple", score:{$gte:4} })</li>
+ </ol>
+
+**3**. 请问以下哪种情况最适合使用索引？
+
+ <ol type="A">
+ <li>属性a常用作查询条件，属性b频繁被修改。在a上创建索引。</li>
+ <li>属性a常用作查询条件，属性b频繁被修改。在b上创建索引。</li>
+ <li>属性a常用作查询条件，文档频繁被插入和删除。在a上创建索引。</li>
+ <li>属性a常用作查询条件，属性a频繁被修改。在a上创建索引。</li>
+ </ol>
+
 [**上一页<<**](chapter2.4-R.md) | [**>>下一页**](chapter2.6-G.md)
 
