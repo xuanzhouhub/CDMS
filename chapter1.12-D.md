@@ -248,14 +248,6 @@
  <li>在描述书的文档中增加一个“作者（author）”属性，取值为其作者的ID。</li>
  <li>A和B均可。</li>
  </ol>
-
-**2**. 考虑以下4个查询 Q1: Select a,b From T1, T2 Where T1.c=T2.c And T1.c=100; Q2: Select a,b From T1, T2 Where T1.c=100 And T2.c=100; Q3: Select a,b From T1, T2 Where T1.c=T2.c And T1.c>100; Q4: Select a,b From T1, T2 Where T1.c>100 And T2.c>100; 说法正确的是：
-
- <ol type="A">
- <li>Q1和Q2结果相同；Q3和Q4结果不同；</li>
- <li>Q1和Q2结果不同；Q3和Q4结果相同；</li>
- <li>Q1和Q2结果相同；Q3和Q4结果相同；</li>
- <li>4个查询结果均不同。</li>
- </ol>
+**2**. 关系数据库让用户自行定义每一张表的Primary Key（主键），用于唯一识别表中的每一行数据。例如，学生表Student(sno, sname, birthday, gender)的主键可定义为sno，宿舍表rooms(dorm_no, room_no，size, floor)的主键可定义为(dorm_no, room_no) （由宿舍号和房间号组成的复合主键）。在文档数据库中，用户无需定义主键，每一个文档都可以由系统自动产生的缺省ID进行识别。换句话说，文档数据库的ID属性起到了Primary Key的作用。请思考：关系数据库的Primary Key机制和文档数据库的ID机制有什么不同，各自的优缺点是什么？
 
 [**上一页<<**](chapter1.11-R.md) | [**>>下一页**](chapter1.13-D.md)

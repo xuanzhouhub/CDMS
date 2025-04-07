@@ -141,6 +141,18 @@ SQL查询语句的执行过程如下：
 
 整个执行过程从根节点出发，迭代调用下层算子的next函数直到叶子节点，数据则从叶子结点通过逐层的计算，最后从根节点返回给用户。
 
+### 练习题
+
+**1**. 请根据你自己的理解找出以下查询的最佳关系代数查询计划。
+
+```sql
+Select sno,sname
+From Student, SC
+Where Student.sno=SC.sno and Grade<60  and cno in (Select cno From Course Where cname='Math I');
+```
+
+
+
 [**上一页<<**](chapter3.1.md) | [**>>下一页**](chapter3.3-R.md)
 
 

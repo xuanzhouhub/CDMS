@@ -68,4 +68,42 @@ WHERE SC.Sno = Student.Sno AND SC.Grade < 60;
 
 如何基于数据字典的统计信息进行代价估算，读者可以阅读其他相关教材。
 
+### 练习题
+
+**1.** 对于查询 Select Distinct sno, sname From Student, SC Where Student.sno=SC.sno And cno='C001'，请判断以下哪个查询计划的执行效率应该最高？（假设SC在cno上有索引，Student在sno上有索引。）
+
+ <ol type="A">
+ <li>（1）Student和SC在sno上做连接；（2）在（1）的结果上做cno='C001'的选择；（3）将（2）的结果在sno, sname上做投影。</li>
+ <li>（1）在SC上做cno='C001'的选择；（2）将（1）的结果和Student在sno上做连接；（3）将（2）的结果在sno, sname上做投影。</li>
+ <li>（1）在SC上做cno='C001'的选择；（2）将student在sno, sname上做投影，将（1）的结果在sno上做投影;（3）将（2）的两项结果在sno上做连接。</li>
+ <li>（1）在SC上做cno='C001'的选择；（2）将（1）的结果在sno上做投影;（3）将（1）的结果和Student在sno上做连接；（4）将（3）的结果在sno, sname上做投影。</li>
+ </ol>
+
+**2.** 对于一个关系代数表达的查询计划 (σ(A) ⋈ σ(B)) ⋈ C，它有几种等价的执行方式？（σ表示选择操作，⋈表示连接操作，这里A表和B表之间的连接属性与A表和B表之间的连接属性是不同的。）
+
+<ol type="A">
+ <li>2种</li>
+ <li>4种</li>
+ <li>10种</li>
+ <li>15种</li>
+ </ol>
+
+**3.** 给定一张表R(a,b,c,d)，假设一个查询为Select a,b,c From R Where a=10 OR b=100。以下说法正确的是？
+
+<ol type="A">
+ <li>索引对该查询无法提供帮助</li>
+ <li>在a或b上创建索引都可加速该查询的执行</li>
+ <li>在a和b上各创建一个索引可加速该查询的执行</li>
+ <li>在a,b上创建一个复合索引可加速该查询的执行</li>
+ </ol>
+
+**8.** 对于两个等价的查询计划 σ(A) ⋈ B 和 σ(A ⋈ B)，要判断它们哪个执行效率更高，以下哪些因素的作用最小。
+
+<ol type="A">
+ <li>B上是否有索引</li>
+ <li>A ⋈ B的结果集大小</li>
+ <li>系统内存空间的大小</li>
+ <li>系统硬盘空间的大小</li>
+ </ol>
+
 [**上一页<<**](chapter3.3-R.md) | [**>>下一页**](chapter3.5-D.md)
