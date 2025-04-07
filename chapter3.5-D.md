@@ -72,6 +72,27 @@ db.student.aggregate( [
 		图 3-5-2 文档数据库aggregate聚合查询的查询处理
 	</div>
 </enter>
+### 练习题
 
+**1**. 请根据你自己的理解找出以下查询的最佳查询计划，并为其设计提升执行效率的优化方案。
+
+```sql
+db.students.find(
+  { class: "计算机科学", score: { $gte: 90 } }
+)
+```
+
+**2**. 假设有一日志文档集Logs存储应用访问日志，其文档结构如下：
+
+```sql
+{
+  "timestamp": ISODate("2023-10-05T08:30:00Z"),
+  "user": "U1001",
+  "action": "login",
+  "duration": 2 // 单位：秒
+}
+```
+
+请写出查询每天action 为 "login" 的平均耗时（四舍五入到整数），并按日期升序输出的查询语言，并找出它的最佳查询计划。
 
 [**上一页<<**](chapter3.4-R.md) | [**>>下一页**](chapter3.6-G.md)

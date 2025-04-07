@@ -33,4 +33,36 @@
 * 其次，用户和订单之间的一对多联系合并到订单表中，将用户的唯一性属性添加到订单表中，则生成订单表Order(<u>Oid</u>, Uid, Date)，其中订单号Oid为主码；
 * 最后，订单和商品之间的多对多联系转换为一个关系模式，订单的唯一属性、商品的唯一属性和联系的自身属性构成该关系模式的属性，则有订单详情表OrderLine(<u>Oid, Pid</u>, Quantity)，其中订单号Oid、商品号Pid共同构成主码。
 
+### 练习题
+
+**1**. 在ER图中有一个叫Person的实体类，它的属性分别为：ID（唯一属性）、Name（单值属性）、Hobby（多值属性）、Skills（多值属性）。对该实体类进行关系模式设计，得到的结果应该是：
+
+ <ol type="A">
+  <li>Person ( ID, Name, Hobby, Skills )</li>
+  <li>Person ( ID, Name ) 、PersonHS ( ID, Hobby, Skills )</li>
+  <li>Person ( ID, Name ) 、PersonH ( ID, Hobby ) 、PersonS ( ID, Skill )</li>
+  <li>Person ( ID ) 、Person ( ID, Name ) 、PersonH ( ID, Hobby ) 、PersonS ( ID, Skill )</li>
+ </ol>
+
+**2**. 假设有一个员工表 Employee(ID, Name, Address, Phone#)（其中ID为主键）。最初电话号码Phone#是一个单值属性，即每个人只有一个电话。后来发现，有少量员工有两个电话号码，且都需要记录。你会如何对数据库的结构设计进行调整？
+
+ <ol type="A">
+  <li>将Phone#的数据类型变成字符串，将两个电话号码用分号隔开，一起存在同一个字段中。</li>
+  <li>将主键变为 (ID, Phone#)，将有两个电话号码的人在表中存两份。</li>
+  <li>将模式修改为 Employee(ID, Name, Address)，Phone(ID, Phone#)。</li>
+  <li>将模式修改为 Employee(ID, Name, Address, Phone#, Phone#Alt)，其中Phone#Alt用于记录另一个电话号码。</li>
+ </ol>
+
+**3**. 下图所示的ER图刻画了四类实体，对“员工”而言，另三类实体（合同工、咨询专家和普通员工）都是它的子类。也就是说，员工拥有的属性，另三类实体都拥有；而子类拥有的属性父类未必拥有。请尝试设计这四类实体对应的关系表。
+
+<center>
+	<img src="fig/ch5.3-exercises3.jpg" width="45%" alt="E-R" />
+	<br>
+	<div display: inline-block; padding : 2px>
+		图 四类实体ER图
+	</div>
+</center>
+
+
+
 [**上一页<<**](chapter5.2.md) | [**>>下一页**](chapter5.4-R.md)
