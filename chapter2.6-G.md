@@ -108,9 +108,47 @@ DROP INDEX index_name [IF EXISTS]
 DROP INDEX composite_range_node_index
 ```
 
+### 练习题
+
+**1.** 假设你正在设计一个社交网络图数据库，它包含`User`类节点和`FOLLOWS`类关系，其中`User`节点包含`name`属性和 `city`属性。现在有以下场景：
+
+- 场景A：需要频繁查询某个城市的所有用户。
+- 场景B：需要频繁查询某个用户关注的所有用户。
+- 场景C：需要频繁查询两个用户之间是否存在关注关系。
+
+请结合Neo4j的存储结构（节点存储文件、关系存储文件、属性存储文件），分析以下问题：
+
+ <ol type="A">
+ <li>针对场景A，如果没有任何索引，查询效率如何？如果为 User 节点的 city 属性创建范围索引，查询效率会有什么提升？为什么？其查询过程是什么样的？</li>
+ <li>针对场景B，Neo4j如何利用关系存储文件中的双向链表来加速查询？请详细描述查询过程。</li>
+ <li>针对场景C，如果没有索引，Neo4j需要如何判断两个用户之间是否存在关注关系？如果为 FOLLOWS 关系创建索引，能否提升查询效率？为什么？</li>
+ <li>如果需要同时满足场景A和场景B的查询需求，你认为应该如何设计索引？请给出具体方案，并说明理由。</li>
+ </ol>
+
+**2.** 现在有一个电影知识图谱，节点包括`Movie` (属性: `title`, `year`) 和 `Person` (属性: `name`)，关系包括 `ACTED_IN` 和 `DIRECTED`。现有以下Cypher查询语句：
+
+```cypher
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WHERE m.year > 2000 AND p.name STARTS WITH "Tom"
+RETURN p.name, m.title
+```
+
+请分析以下问题：
+
+ <ol type="A">
+ <li>如果没有索引，该查询语句的执行计划大致是什么样的？查询效率如何？</li>
+ <li>为了优化该查询语句，你认为应该创建哪些索引？请给出具体的 CREATE INDEX 语句。</li>
+ <li>创建索引后，该查询语句的执行计划会有什么变化？查询效率会有什么提升？</li>
+ <li>如果将查询语句修改为以下形式，你认为之前的索引是否仍然有效？如果无效，应该如何调整索引？</li>
+ </ol>
+
+```cypher
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WHERE p.name STARTS WITH "Tom" AND m.year > 2000
+RETURN p.name, m.title
+```
+
 [**上一页<<**](chapter2.5-D.md) | [**>>下一页**](chapter3.1.md)
-
-
 
 
 

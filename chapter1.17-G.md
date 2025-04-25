@@ -400,4 +400,92 @@ MATCH (n)
 DETACH DELETE n
 ```
 
+### 练习题
+
+**1.** 假设你有一个电影知识图谱，其中包含 `Movie` 节点（属性：`title`, `year`, `genre`）和 `Person` 节点（属性：`name`），以及 `ACTED_IN` 关系连接演员和电影，`DIRECTED` 关系连接导演和电影。以下Cypher查询语句将返回什么结果？
+
+```cypher
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)<-[:DIRECTED]-(d:Person)
+WHERE p <> d
+RETURN p.name, m.title, d.name
+```
+
+ <ol type="A">
+ <li>所有演员和他们出演的电影的标题</li>
+ <li>所有导演和他们导演的电影的标题。</li>
+ <li>所有演员和导演合作的电影，以及演员和导演的姓名。</li>
+ <li>所有演员和导演合作的电影，以及演员和导演的姓名，但演员和导演不能是同一个人。</li>
+ </ol>
+
+**2.** 假设你有一个产品推荐图，其中包含 `User` 节点（属性：`name`）和 `Product` 节点（属性：`name`, `price`），以及 `PURCHASED` 关系连接用户和产品。以下Cypher查询语句将返回什么结果？
+```cypher
+MATCH (u:User)-[:PURCHASED]->(p:Product)
+WITH u, AVG(p.price) AS avgPrice
+WHERE avgPrice > 100
+RETURN u.name, avgPrice
+ORDER BY avgPrice DESC
+LIMIT 10
+```
+
+ <ol type="A">
+ <li>所有购买过产品的用户的姓名和他们购买的产品的平均价格。</li>
+ <li>所有购买过产品的用户的姓名和他们购买的产品的平均价格，按照平均价格降序排列。</li>
+ <li>所有购买过产品的用户的姓名和他们购买的产品的平均价格，且平均价格大于100。</li>
+ <li>所有购买过产品的用户的姓名和他们购买的产品的平均价格，且平均价格大于100，按照平均价格降序排列，只返回前10个结果。</li>
+ </ol>
+
+**3.** 假设你有一个社交网络图，其中包含 `User` 节点（属性：`username`, `name`）和 `FOLLOWS` 关系连接用户。现在需要查询所有至少被5个用户关注的用户的用户名。以下哪个Cypher查询语句能够正确表达这个需求？
+
+ <ol type="A">
+ <li>MATCH (a:User)<-[:FOLLOWS]-(b:User) RETURN a.username</li>
+ <li>MATCH (a:User)<-[:FOLLOWS]-(b:User) WITH a, count(b) AS followerCount WHERE followerCount >= 5 RETURN a.username</li>
+ <li>MATCH (a:User)<-[:FOLLOWS]-(b:User) WITH a, count(b) AS followerCount WHERE count(b) >= 5 RETURN a.username</li>
+ <li>MATCH (a:User)<-[:FOLLOWS]-(b:User) WITH a, count(b) AS followerCount WHERE followerCount >= 5 RETURN a.username, followerCount</li>
+ </ol>
+
+**4.** 假设你有一个产品推荐图，其中包含 `User` 节点（属性：`name`）和 `Product` 节点（属性：`name`, `price`），以及 `PURCHASED` 关系连接用户和产品。现在需要查询所有购买了价格高于100的产品，并且也购买了价格低于50的产品的用户的姓名。以下哪个Cypher查询语句能够正确表达这个需求？
+
+ <ol type="A">
+ <li>MATCH (u:User)-[:PURCHASED]->(p1:Product) WHERE p1.price > 100 MATCH (u)-[:PURCHASED]->(p2:Product) WHERE p2.price < 50 RETURN u.name</li>
+ <li>MATCH (u:User)-[:PURCHASED]->(p1:Product) WHERE p1.price > 100 WITH u MATCH (u)-[:PURCHASED]->(p2:Product) WHERE p2.price < 50 RETURN u.name</li>
+ <li>MATCH (u:User)-[:PURCHASED]->(p1:Product) WHERE p1.price > 100 WITH u MATCH (u)-[:PURCHASED]->(p2:Product) WHERE p2.price < 50 RETURN DISTINCT u.name</li>
+ <li>MATCH (u:User)-[:PURCHASED]->(p1:Product) WHERE p1.price > 100 MATCH (u)-[:PURCHASED]->(p2:Product) WHERE p2.price < 50 RETURN DISTINCT u.name</li>
+ </ol>
+
+**5.** 现在有一个电影知识图谱，其包含 `Movie` 节点（属性：`title`, `year`, `genre`）和 `Person` 节点（属性：`name`），以及 `ACTED_IN` 关系连接演员和电影。现在需要查询所有在1990年之后上映的电影中出演过的演员的姓名，并去除重复的结果。以下哪个Cypher查询语句能够正确表达这个需求？
+
+ <ol type="A">
+ <li>MATCH (m:Movie {year: 1990})<-[:ACTED_IN]-(p:Person) RETURN p.name</li>
+ <li>MATCH (m:Movie) <-[:ACTED_IN]-(p:Person) WHERE m.year > 1990 RETURN p.name</li>
+ <li>MATCH (m:Movie) <-[:ACTED_IN]-(p:Person) WHERE m.year > 1990 RETURN DISTINCT p.name</li>
+ <li>MATCH (m:Movie) <-[:ACTED_IN]-(p:Person) WITH DISTINCT p.name WHERE m.year > 1990 RETURN p.name</li>
+ </ol>
+
+**6.** 以下哪些查询是等价的？
+
+ <ol type="A">
+ <li>MATCH (a:Person)-[:KNOWS]->(b:Person)-[:KNOWS]->(c:Person) WHERE a <> cRETURN a.name, c.name 和 MATCH (a:Person)-[:KNOWS* 2]->(c:Person) WHERE a <> cRETURN a.name, c.name</li>
+ <li>MATCH (a:User)-[:FOLLOWS]->(b:User) RETURN a.username, b.username 和 MATCH (a:User), (b:User) WHERE (a)-[:FOLLOWS]->(b)RETURN a.username, b.username</li>
+ <li>MATCH (a:User)-[:POSTED]->(b:Post) WITH a, COUNT(b) AS postCount RETURN a.username, postCount ORDER BY postCount DESC LIMIT 5 和 MATCH (a:User)-[:POSTED]->(b:Post) RETURN a.username, COUNT(b) AS postCountORDER BY postCount DESCLIMIT 5</li>
+ <li>MATCH (a:User)-[:FOLLOWS]->(b:User) RETURN a.username, b.username 和 MATCH (a:User), (b:User) WHERE (a)-[:FOLLOWS]->(b) RETURN a.username, b.username</li>
+ </ol>
+
+**7.** 现在有一个电影知识图谱，其模式如下：
+```cypher
+(:Movie {title, year})
+(:Person {name})
+(:Person)-[:ACTED_IN]->(:Movie)
+(:Person)-[:DIRECTED]->(:Movie)
+```
+
+请编写Cypher查询语句，完成以下信息需求：
+
+ <ol type="A">
+ <li>查询所有在2010年之后上映的电影的演员姓名。</li>
+ <li>查询既是演员又是导演的人的姓名。</li>
+ <li>查询所有和 "Tom Hanks" 合作过的演员姓名（合作指共同出演一部电影）。</li>
+ <li>删除所有没有演员出演的电影。</li>
+ <li>查询出演电影数量最多的演员姓名。</li>
+ </ol>
+
 [**上一页<<**](chapter1.16-G.md) | [**>>下一页**](chapter2.1.md)
