@@ -60,4 +60,42 @@ Neo4j中的执行计划运算符分为叶子运算符（Leaf Operator）、更�
 
 在Neo4j中，存在对每个图算法进行内存估计的功能，读者可以自行查阅并使用。
 
+
+### 练习题
+
+**1**. 回顾上一小节练习题1中的查询语句：
+```sql
+MATCH (a:User)-[:FOLLOWS]->(b:User)-[:LIKES]->(c:Post)
+WHERE a.username = '沐辰' AND c.timestamp > date('2025-01-01')
+RETURN b.username, count(c) AS postCount
+```
+
+在上一小节相信你已经写出该查询的可能执行计划，现在我们来尝试提出两种优化方案，并解释原理。
+
+
+**1**.有对下述Cypher语句，现该语句分别进行逻辑优化和物理优化，请回答（1）-（3）小题：
+```sql
+MATCH (s:Student)-[e:ENROLLED]->(c:Course)
+WHERE s.major = 'CS' 
+  AND c.credit > 3
+  AND e.semester = '2023-Fall'
+RETURN s.name, c.name
+```
+（1）逻辑优化：重写WHERE条件的顺序，说明优化理由；
+
+（2）物理优化：在物理优化过程中，需要创建哪些索引（列出具体索引语句）？哪些字段适合建复合索引（为什么？）？如何优化ENROLLED关系的遍历效率？
+
+```sql
+[提示] 一个可行的索引建立方式供参考：
+CREATE INDEX ON :Student(major);
+CREATE INDEX ON :Course(credit);
+CREATE INDEX ON :ENROLLED(semester);
+```
+
+
+（3）综合优化：给出最终优化后的查询语句，并说明优化后的优势。
+
+
+
+
 [**上一页<<**](chapter3.6-G.md) | [**>>下一页**](chapter3.8-G.md)
